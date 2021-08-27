@@ -1,0 +1,2 @@
+what new helper functions?
+    initialize player tags?
