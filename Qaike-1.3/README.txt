@@ -1,1 +1,1 @@
-Quake is Matthew Edelen's second generation Qwixx AI.
+Qaike is Matthew Edelen's second generation Qwixx AI.
