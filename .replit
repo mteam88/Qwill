@@ -1,0 +1,2 @@
+language = "undefined"
+run = "python3 QaikeAI_1.py"
