@@ -1,2 +1,2 @@
-language = "undefined"
+language = "python3"
 run = "python3 QaikeAI_1.py"
