@@ -1,2 +1,2 @@
-language: pytho2
-install: 
+language: python
+install: pip install random
