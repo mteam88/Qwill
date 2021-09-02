@@ -92,7 +92,7 @@ def scorelists(lists, penalty):
 
 def wildsinptgen(tag):
     """
-    Yields the input of a player. the player will be prompted with (tag)
+    Yields the input of a player. the player will be prompted with (tag(1-12))
     "tag" should be a string or integer representing an individual player in
         the QWIXX game
     """
