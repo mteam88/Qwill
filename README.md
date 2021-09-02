@@ -11,9 +11,10 @@ If you want to run the code using replit.com, navigate to this link https://repl
 and click run.
 
 ### Running with Binder
-[![Binder](https://mybinder.org/v2/gh/mteam88/Qaike/main)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/mteam88/Qaike/main)
 
-I would also recommend using binder:https://mybinder.org/. Click the above badge to clone than use "%run QaikeAI_1.py" in a new notebook to run.
+You can also run the code using Binder:https://mybinder.org/. Click the above badge to clone than use "%run QaikeAI_1.py" in a new notebook to run.
+To create a new notebook, click new in the top right, and then select "Python 3." If this doesn't work, open a new terminal through the same menu an run: "python3 QaikeAI_1.py"
 
-### Issues
+## Issues
 If you have any problems, please open an issue on github.
