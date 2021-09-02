@@ -97,7 +97,7 @@ def wildsinptgen(tag):
         the QWIXX game
     """
     tag = str(tag)
-    yield input(tag + ': ')
+    yield input(tag + '(1-12): ')
 
 
 def inithumans():
