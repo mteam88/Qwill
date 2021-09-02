@@ -1,4 +1,9 @@
 # Qaike
+
+![GitHub repo size](https://img.shields.io/github/repo-size/mteam88/Qaike)
+![Lines of code](https://img.shields.io/tokei/lines/github/mteam88/Qaike)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/mteam88/Qaike)
+
 A simple bot to play a dice game called QWIXX.
 
 ## Running
