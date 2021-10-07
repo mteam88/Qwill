@@ -1,5 +1,6 @@
 import random as rand
 from Qepicenter import *
+ProgramEnd = Exception
 Penalty = Exception
 LOGFILE = 'Qlog.txt'
 
@@ -257,6 +258,7 @@ def handlegameover(lists, penalty, plyrs, tags):
         print(displists(lists) + '\n', file=logf)
         print('Penalty: ' + str(penalty), file=logf)
     print('You can safely close the program now')
+    input()
 #    quit() # would be enabled, but sometimes unwanted (closes shell and you can't see score)
 
 
