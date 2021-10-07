@@ -106,7 +106,7 @@ def inithumans():
     """
     tags = []
     for i in range(5):
-        tags.append(input('\nPlayer name/tag: '))
+        tags.append(input('\nPlayer name/tag (blank entry aborts): '))
         if not tags[i]:
             tags.pop()
             break
