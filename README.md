@@ -10,6 +10,9 @@ To use, you can run the file called QaikeAI_1.py with a Python interpreter.
 
 You can also use an online python interpreter. I recommend relpit.com or Binder
 
+### Running with Gitpod
+Navigate to https://gitpod.io/#github.com/Matthews-Makes/Qaike and fullsize the "terminal" to play.
+
 ### Running with Replit
 If you want to run the code using replit.com, navigate to this link https://replit.com/@mteam888/Qaike?v=1
 and click run.
