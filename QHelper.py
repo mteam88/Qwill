@@ -258,7 +258,8 @@ def handlegameover(lists, penalty, plyrs, tags):
         print(displists(lists) + '\n', file=logf)
         print('Penalty: ' + str(penalty), file=logf)
     print('You can safely close the program now')
-    input()
+    input('Enter to quit')
+    quit()
 #    quit() # would be enabled, but sometimes unwanted (closes shell and you can't see score)
 
 
