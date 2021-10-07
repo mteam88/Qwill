@@ -20,11 +20,13 @@ Penalty = Exception
 
 
 def bestplay(lists, possible, richter=0):
-    if not possible:
-        raise Penalty
+    if not possible: # Checking if no plays are possible
+        raise Penalty # Choosing to take a QWIXX penalty
 # TODO: Complete helper function (not random selection), remember to raise
 #     Penalty exception when that is AI choice or no choices are passed.
     if richter == 0:
+        return rand.choice(possible)
+    if richter == 1: #richter 1 is leftmost play selected 
         current = (None, 12)
         for val in possible:
             if val[1] == 10:

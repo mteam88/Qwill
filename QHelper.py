@@ -161,7 +161,14 @@ def mycrossref(la, lb):
     return list(set(myfinal))
 
 
-def emptyspots(lists, true_Dice):  # TODO:Complete docstr
+def emptyspots(lists, true_Dice):
+    """
+    Returns a list of all of the empty spots that are available.
+    This includes all empty spots to the right of the rightmost X.
+    These do not represent all possible plays because they include lock areas.
+    (12, 2, and lock symbols may not be possible). 
+    Also does not account for rolls!
+    """
     pempty = []
     for i, color in enumerate(lists):
         if true_Dice[i] is True:
@@ -199,7 +206,12 @@ def possibleplays(lists, true_Dice, rolls):
     return finalpos
 
 
-def isblocked(true_Dice):  # TODO: Complete docstr
+def isblocked(true_Dice):
+    """
+    Ask users if any new colors are blocked.
+    If so, mark colors as blocked (False) in true_dice.
+    Returns new true_dice.
+    """
     blockinpt = input('Are any new colors blocked?   ')
     while blockinpt:
         if blockinpt:
@@ -229,7 +241,13 @@ def isgameover(true_Dice):
         return False
 
 
-def handlegameover(lists, penalty, plyrs, tags):  # TODO: complete docstr
+def handlegameover(lists, penalty, plyrs, tags):
+    """
+    gets various game data
+    logs those values to LOGFILE (global variable)
+    announces to player that game is over
+    AND, displays score and final scoresheet
+    """
     print('\tGAME OVER!!!\n\n')
     print('I scored a ' + str(scorelists(lists, penalty)), end='\n\n')
     print('My final scoresheet is ', displists(lists), sep='\n')
@@ -238,7 +256,7 @@ def handlegameover(lists, penalty, plyrs, tags):  # TODO: complete docstr
         print('against ' + str(plyrs) + ' human players', file=logf)
         print(displists(lists) + '\n', file=logf)
         print('Penalty: ' + str(penalty), file=logf)
-    quit()
+#    quit() # would be enabled, but sometimes unwanted (closes shell and you can't see score)
 
 
 def aiturn(lists, true_Dice, pnlty, tags, humans):
@@ -281,7 +299,7 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     # Only trying bestplay because bestplay will raise Penalty exception
     # if that is the best choice.
     try:
-        bestply = bestplay(lists, pos)
+        bestply = bestplay(lists, pos, richter=1)
         # Richter (difficulty) can be added here.
 #        print(bestply, '   DEBUG')  # DEBUGGER
         lists = addX(lists, bestply[0], bestply[1])
