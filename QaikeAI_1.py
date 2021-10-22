@@ -39,13 +39,13 @@ for gameloopiter in range(1,50):
                 print('I blocked a color.')
                 print(displists(lists))
                 if isgameover(true_Dice):
-                    handlegameover(lists, pnlty, humans, tags)
+                    handlegameover(lists, pnlty, hmncnt, tags)
         else:
             print('I did not take the wild. ')
 # Are any new colors blocked?
         true_Dice = isblocked(true_Dice)
         if isgameover(true_Dice):
-            handlegameover(lists, pnlty, humans, tags)
+            handlegameover(lists, pnlty, hmncnt, tags)
 # Is game over?
         if input('Is the game over?  (Type "Yes" to affirm):  ') == 'Yes':
             handlegameover(lists, pnlty, hmncnt, tags)
