@@ -19,13 +19,14 @@ Penalty = Exception
 #    return lists
 
 
-def bestplay(lists, possible, richter=0):
+def bestplay(lists, possible, richter=0, lastxs=False):
     if not possible: # Checking if no plays are possible
         raise Penalty # Choosing to take a QWIXX penalty
 # TODO: Complete helper function (not random selection), remember to raise
 #     Penalty exception when that is AI choice or no choices are passed.
     if richter == 0:
         return rand.choice(possible)
+
     if richter == 1: #richter 1 is leftmost play selected 
         current = (None, 12)
         for val in possible:
@@ -33,6 +34,18 @@ def bestplay(lists, possible, richter=0):
                 return val
             if val[1] < current[1]:
                 current = val
+        return current
+
+    if richter == 2: # BETA
+        llastxs = lastxs(lists)
+        current = (None, 12)
+        for val in possible:
+            if val[1] == 10:
+                return val
+            if val[1] < current[1]:
+                current = val
+        if current[1] - llastxs[current[0]] > 4: #if more than 4 spaces are skipped, take a penalty instead of playing
+            raise Penalty
         return current
 
 

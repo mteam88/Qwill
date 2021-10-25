@@ -127,6 +127,15 @@ def findlastX(row):
         return -1
     return len(row)-i-1
 
+def findlastXs(lists):
+    """
+    findlastXs returns the last (rightmost) occurence of the number '1' in all rows in lists
+    """
+    final=[]
+    for row in lists:
+        final.append(findlastX(row))
+    return final
+
 
 def rollindex(rolls):
     """
@@ -300,10 +309,10 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     print('My rolls are: ', rolls)  # TODO: improve this
     pos = possibleplays(lists, true_Dice, rolls)
 #    print(pos, '     DEBUG')  # DEBUGGER
-    # Only trying bestplay because bestplay will raise Penalty exception
+    # Only "try"ing bestplay because bestplay will raise Penalty exception
     # if that is the best choice.
     try:
-        bestply = bestplay(lists, pos, richter=1)
+        bestply = bestplay(lists, pos, richter=1, lastxs=findlastXs)
         # Richter (difficulty) can be added here.
 #        print(bestply, '   DEBUG')  # DEBUGGER
         lists = addX(lists, bestply[0], bestply[1])
