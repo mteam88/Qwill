@@ -4,6 +4,20 @@ ProgramEnd = Exception
 Penalty = Exception
 LOGFILE = 'Qlog.txt'
 
+def tutorial():
+    """
+    Runs the player through a quick tutorial on how to use the bot.
+    """
+    if input("Would you like a tutorial on how to use Qaike? ('yes' to accept): ") == "yes":
+        print("\n\nQaike Tutorial")
+        print("If you are reading this, you have already initialized the human players in the game.")
+        print("Make sure you have entered each player seperately.")
+        print("\nWhen you start the Qaike AI, have all human players get ready their Qwixx scoresheets")
+        print("The bot/AI always goes first, it will tell you what wild is available")
+        print("The bot will also show you its rolls in the format [firstwild, secondwild, red, yellow, green, blue]")
+        print("\nAll human players should write down their wilds, and then type their wilds")
+        print("\nTell Qaike when your game is done, and it will show you its score and its scorecard")
+        print("\nIf you have any questions, open an issue on Github (https://github.com/Matthews-Makes/Qaike/issues/new/choose)")
 
 def croll(true_Dice):
     """

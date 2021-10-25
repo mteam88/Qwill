@@ -12,6 +12,8 @@ hmncnt = len(tags)
 true_Dice = [True, True, True, True]
 pnlty = 0
 
+tutorial()
+
 for gameloopiter in range(1,50):
     print('\n' + '-'*60 + '\n\t\tRound ' + str(gameloopiter) + '\n')
     pnlty, lists, true_Dice = aiturn(lists, true_Dice, pnlty, tags, hmncnt)
