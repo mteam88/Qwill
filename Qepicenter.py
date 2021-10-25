@@ -49,9 +49,17 @@ def bestplay(lists, possible, richter=0, lastxs=False):
         return current
 
 
-def takewild(lists, wild, clrolls, true_Dice):
+def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots):
 # TODO: Complete helper function (not always false)
-    return False, lists
+    emptyspotsO = emptyspots(lists, true_Dice)
+    print(emptyspotsO)
+    print(wilds)
+    wild = sum(wilds)
+    if wild in emptyspotsO:
+        addX(lists, wild[0], wild[1], muffled=True)
+        return [0,wild], lists
+    else:
+        return False, lists
 
 
 def takehumanwild(lists, wild, true_Dice):
