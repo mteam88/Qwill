@@ -12,9 +12,9 @@ hmncnt = len(tags)
 true_Dice = [True, True, True, True]
 pnlty = 0
 
-tutorial()
+tutorial() #Runs tutorial if user opts into it
 
-for gameloopiter in range(1,50):
+for gameloopiter in range(1,100): #master iterator
     print('\n' + '-'*60 + '\n\t\tRound ' + str(gameloopiter) + '\n')
     pnlty, lists, true_Dice = aiturn(lists, true_Dice, pnlty, tags, hmncnt)
 #    input()
