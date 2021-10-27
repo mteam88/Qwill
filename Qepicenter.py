@@ -49,14 +49,29 @@ def bestplay(lists, possible, richter=0, lastxs=False):
         return current
 
 
-def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots):
+def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex):
 # TODO: Complete helper function (not always false)
     emptyspotsO = emptyspots(lists, true_Dice)
     print(emptyspotsO)
-    print(wilds)
     wild = sum(wilds)
-    if wild in emptyspotsO:
-        addX(lists, wild[0], wild[1], muffled=True)
+    print(wild)
+    colorofe,indexofe = map(list, zip(*emptyspotsO))
+    print(colorofe, indexofe)
+    indices = [index for index, element in enumerate(indexofe) if element == wild]
+    print(indices)
+    options = []
+    for ind in indices:
+        clr = colorofe[ind]
+        #print("color: ", clr)
+        #print("wild: ", wild)
+        nio = numindex(clr, wild)
+        #print("nio: ", nio)
+        options.append(nio)
+    print(options)
+    # TODO: eval options
+    if False:
+        addX(lists, wild[0], wild, muffled=True)
+        print("Took wild")
         return [0,wild], lists
     else:
         return False, lists
