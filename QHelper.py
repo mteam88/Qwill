@@ -318,7 +318,7 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     print('\n\t\t\tMy Turn\t\t\t\n')
     print('I rolled a ' + str(wilds[0]) + ' and a ' + str(wilds[1]) +
           ', for a total of ' + str(sum(wilds)) + '.')
-    took, lists = takewild(lists, wilds, clrs, true_Dice, addX, emptyspots, numindex)
+    took, lists = takewild(lists, wilds, clrs, true_Dice, addX, emptyspots, numindex, findlastXs)
     if took:
         print('I took the wild', displists(lists), sep='\n')
         if took[1] == 10:
