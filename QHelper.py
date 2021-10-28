@@ -150,6 +150,15 @@ def findlastXs(lists):
         final.append(findlastX(row))
     return final
 
+def numindex(color, num):
+    """
+    Similar to rollindex, returns index of "num" in the list "color"
+    """
+    if color >= 2:
+        return [color, 12 - num]
+    else:
+        return [color, num - 2]
+
 
 def rollindex(rolls):
     """
@@ -236,6 +245,7 @@ def isblocked(true_Dice):
     If so, mark colors as blocked (False) in true_dice.
     Returns new true_dice.
     """
+    # TODO: Add functionality so this does not happen if no humans are playing.
     blockinpt = input('Are any new colors blocked?   ')
     while blockinpt:
         if blockinpt:
@@ -308,7 +318,7 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     print('\n\t\t\tMy Turn\t\t\t\n')
     print('I rolled a ' + str(wilds[0]) + ' and a ' + str(wilds[1]) +
           ', for a total of ' + str(sum(wilds)) + '.')
-    took, lists = takewild(lists, wilds, clrs, true_Dice)
+    took, lists = takewild(lists, wilds, clrs, true_Dice, addX, emptyspots, numindex, findlastXs)
     if took:
         print('I took the wild', displists(lists), sep='\n')
         if took[1] == 10:

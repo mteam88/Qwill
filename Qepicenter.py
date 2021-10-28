@@ -2,7 +2,30 @@
 import random as rand
 Penalty = Exception
 
+class woption:
+    def __init__(self, placement):
+        #print("placement: ", placement)
+        self.skipped = False
+        self.scoreincr = False
+        self.placement = placement
 
+    @classmethod
+    def evaluateall(self, optionsl): # TODO: eval by scoreincr if skipped is same
+        bestskip = 15
+        bestskipi = False
+        optn = False
+        for i, optn in enumerate(optionsl):
+            if bestskip >= optn.skipped:
+                bestskip = optn.skipped
+                bestskipi = i
+        #print("bestskip: ",bestskip)
+        return optn
+
+    def displayopt(self): #displays to user (only for debugging)
+        #print("evaluating", self)
+        #print("placement", self.placement)
+        #print("would skip", self.skipped)
+        pass
 #def addX(lists, color, index, muffled=False):
 #    """
 #    Returns lists with an added "1" at colors index
@@ -49,9 +72,47 @@ def bestplay(lists, possible, richter=0, lastxs=False):
         return current
 
 
-def takewild(lists, wild, clrolls, true_Dice):
+def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastxs):
 # TODO: Complete helper function (not always false)
-    return False, lists
+    emptyspotsO = emptyspots(lists, true_Dice)
+    #print(emptyspotsO)
+    wild = sum(wilds)
+    #print(wild)
+    colorofe,indexofe = map(list, zip(*emptyspotsO))
+    #print(colorofe, indexofe)
+    indices = [index for index, element in enumerate(indexofe) if element == wild]
+    #print(indices)
+    options = []
+
+    for ind in indices:
+        clr = colorofe[ind]
+        #print("color: ", clr)
+        #print("wild: ", wild)
+        nio = numindex(clr, wild)
+        #print("nio: ", nio)
+        if tuple(nio) in emptyspotsO:
+            #print("nio possible: ", nio)
+            options.append(woption(nio))
+    #print("options: ", options)
+
+    lastxl = lastxs(lists)
+    for option in options:
+        option.skipped = option.placement[1] - lastxl[option.placement[0]]
+        #print("skipped", option.skipped ,"for ", option)
+
+    bestoptn = woption.evaluateall(options)
+    if not bestoptn:
+        return False, lists
+
+    #bestoptn.displayopt()
+
+    if bestoptn.skipped == 1: #takes wild if none are skipped
+        # TODO: Improve skipped number above, probably whole function
+        addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=True)
+        print("Took wild")
+        return [0,wild], lists
+    else:
+        return False, lists
 
 
 def takehumanwild(lists, wild, true_Dice):
