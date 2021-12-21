@@ -73,12 +73,11 @@ def bestplay(lists, possible, richter=0, lastxs=False):
 
 
 def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastxs):
-# TODO: Complete helper function (not always false)
-    emptyspotsO = emptyspots(lists, true_Dice)
+    emptyspotsO = emptyspots(lists, true_Dice) #empty spots options variable.
     #print(emptyspotsO)
-    wild = sum(wilds)
+    wild = sum(wilds) #finding wilds sum
     #print(wild)
-    colorofe,indexofe = map(list, zip(*emptyspotsO))
+    colorofe,indexofe = map(list, zip(*emptyspotsO)) # disects options into color and index
     #print(colorofe, indexofe)
     indices = [index for index, element in enumerate(indexofe) if element == wild]
     #print(indices)
@@ -118,4 +117,7 @@ def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastx
 def takehumanwild(lists, wild, true_Dice):
 # TODO: Complete helper function, remember to only return a blocking play if
 #      has 5 Xs in row to play in
+    emptyspotsO = emptyspots(lists, true_Dice) #empty spots options variable.
+    for color in true_Dice:
+        
     return False, lists
