@@ -12,15 +12,16 @@ class woption:
     @classmethod
     def evaluateall(self, optionsl): # TODO: eval by scoreincr if skipped is same
         bestskip = 15
-        bestskipi = False
+        bestskipi = "none"
         optn = False
         for i, optn in enumerate(optionsl):
             if bestskip >= optn.skipped:
+                print(bestskip, optn.skipped)
                 bestskip = optn.skipped
                 bestskipi = i
         print("bestskip: ",bestskip)
         print("bestskipi: ",bestskipi)
-        if bestskipi == False:
+        if bestskipi == "none":
             return False
         return optionsl[bestskipi]
 
@@ -121,22 +122,33 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
 # TODO: Complete helper function, remember to only return a blocking play if
 #      has 5 Xs in row to play in
     emptyspotsO = emptyspots(lists, true_Dice) #empty spots options variable.
-
+    print(emptyspotsO)
     colorofe,indexofe = map(list, zip(*emptyspotsO)) # disects options into color and index
-
-    indices = [index for index, element in enumerate(indexofe) if element == wild]
-
+    print(colorofe,indexofe)
+    #indices = [index for index, element in enumerate(indexofe) if element == wild]
+    indices = []
     options = []
-
-    for ind in indices:
-        clr = colorofe[ind]
-        print("color: ", clr)
-        print("wild: ", wild)
-        nio = numindex(clr, wild)
-        print("nio: ", nio)
-        if tuple(nio) in emptyspotsO:
-            print("nio possible: ", nio)
-            options.append(woption(nio))
+    for index, element in enumerate(indexofe):
+        if element == wild:
+            print("pass 1")
+        if numindex(colorofe[index],wild)[1] == element:
+            print(colorofe[index],element)
+            print("pass 2")
+            indices.append(element)
+            options.append(woption([colorofe[index],element]))
+        print(numindex(colorofe[index],wild)[1])
+        print(element)
+    """
+        for ind in indices:
+            clr = colorofe[ind]
+            print("color: ", clr)
+            print("wild: ", wild)
+            nio = numindex(clr, wild)
+            print("nio: ", nio)
+            if tuple(nio) in emptyspotsO:
+                print("nio possible: ", nio)
+                options.append(woption(nio))
+    """
     print("options: ", options)
     lastxl = lastxs(lists)
     print(lastxl)
@@ -148,14 +160,15 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
 
     bestoptn = woption.evaluateall(options)
 
-    if not bestoptn:
+    if bestoptn == False:
+        print("no bestoptn")
         return False, lists
 
     print("bestoptn:")
     bestoptn.displayopt()
 
-    if bestoptn.skipped == 1: #takes wild if none are skipped
-        # TODO: Improve skipped number above, probably whole function
+    if bestoptn.skipped == 1 or bestoptn.placement[1] == 10: #takes wild if none are skipped or if blocking play 
+        # TODO: Improve skipped number above, probably whole function, makes sure it knows not to block if not 5 xs
         addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
         print("Took human wild")
         return [0,wild], lists
