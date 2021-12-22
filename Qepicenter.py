@@ -18,14 +18,17 @@ class woption:
             if bestskip >= optn.skipped:
                 bestskip = optn.skipped
                 bestskipi = i
-        #print("bestskip: ",bestskip)
-        return optn
+        print("bestskip: ",bestskip)
+        print("bestskipi: ",bestskipi)
+        if bestskipi == False:
+            return False
+        return optionsl[bestskipi]
 
     def displayopt(self): #displays to user (only for debugging)
-        #print("evaluating", self)
-        #print("placement", self.placement)
-        #print("would skip", self.skipped)
-        pass
+        print("evaluating", self)
+        print("placement", self.placement)
+        print("would skip", self.skipped)
+        #pass
 #def addX(lists, color, index, muffled=False):
 #    """
 #    Returns lists with an added "1" at colors index
@@ -114,10 +117,47 @@ def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastx
         return False, lists
 
 
-def takehumanwild(lists, wild, true_Dice):
+def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
 # TODO: Complete helper function, remember to only return a blocking play if
 #      has 5 Xs in row to play in
     emptyspotsO = emptyspots(lists, true_Dice) #empty spots options variable.
-    for color in true_Dice:
-        
-    return False, lists
+
+    colorofe,indexofe = map(list, zip(*emptyspotsO)) # disects options into color and index
+
+    indices = [index for index, element in enumerate(indexofe) if element == wild]
+
+    options = []
+
+    for ind in indices:
+        clr = colorofe[ind]
+        print("color: ", clr)
+        print("wild: ", wild)
+        nio = numindex(clr, wild)
+        print("nio: ", nio)
+        if tuple(nio) in emptyspotsO:
+            print("nio possible: ", nio)
+            options.append(woption(nio))
+    print("options: ", options)
+    lastxl = lastxs(lists)
+    print(lastxl)
+
+    for opt in options:
+        opt.skipped = opt.placement[1] - lastxl[opt.placement[0]]
+        print(opt.placement[1] - lastxl[opt.placement[0]])
+        print("IMPORTANT: skipped", opt.skipped ,"for ", opt)
+
+    bestoptn = woption.evaluateall(options)
+
+    if not bestoptn:
+        return False, lists
+
+    print("bestoptn:")
+    bestoptn.displayopt()
+
+    if bestoptn.skipped == 1: #takes wild if none are skipped
+        # TODO: Improve skipped number above, probably whole function
+        addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
+        print("Took human wild")
+        return [0,wild], lists
+    else:
+        return False, lists

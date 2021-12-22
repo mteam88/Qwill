@@ -153,6 +153,7 @@ def findlastXs(lists):
 def numindex(color, num):
     """
     Similar to rollindex, returns index of "num" in the list "color"
+    color: 1-red, 2-yellow, 3-green, 4-blue
     """
     if color >= 2:
         return [color, 12 - num]
