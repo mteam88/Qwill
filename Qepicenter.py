@@ -10,11 +10,13 @@ class woption:
         self.placement = placement
 
     @classmethod
-    def evaluateall(self, optionsl): # TODO: eval by scoreincr if skipped is same
+    def evaluateall(self, optionsl, lists): # TODO: eval by scoreincr if skipped is same
         bestskip = 15
         bestskipi = "none"
         optn = False
         for i, optn in enumerate(optionsl):
+            if optn.placement[1] == 10 and lists[optn.placement[0]].count(1) >= 5: # always do blocking play
+                return optn # TODO: improve so it checks which blocking play to do if multiple are possible
             if bestskip >= optn.skipped:
                 print(bestskip, optn.skipped)
                 bestskip = optn.skipped
@@ -77,6 +79,7 @@ def bestplay(lists, possible, richter=0, lastxs=False):
 
 
 def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastxs):
+    #TODO:  make sure to not return blocking play if not 5 xs in row
     emptyspotsO = emptyspots(lists, true_Dice) #empty spots options variable.
     #print(emptyspotsO)
     wild = sum(wilds) #finding wilds sum
@@ -103,7 +106,7 @@ def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastx
         option.skipped = option.placement[1] - lastxl[option.placement[0]]
         #print("skipped", option.skipped ,"for ", option)
 
-    bestoptn = woption.evaluateall(options)
+    bestoptn = woption.evaluateall(options, lists)
     if not bestoptn:
         return False, lists
 
@@ -113,7 +116,7 @@ def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastx
         # TODO: Improve skipped number above, probably whole function
         addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=True)
         print("Took wild")
-        return [0,wild], lists
+        return [bestoptn.placement[0],wild], lists
     else:
         return False, lists
 
@@ -122,22 +125,22 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
 # TODO: Complete helper function, remember to only return a blocking play if
 #      has 5 Xs in row to play in
     emptyspotsO = emptyspots(lists, true_Dice) #empty spots options variable.
-    print(emptyspotsO)
+#    print(emptyspotsO)
     colorofe,indexofe = map(list, zip(*emptyspotsO)) # disects options into color and index
-    print(colorofe,indexofe)
+#    print(colorofe,indexofe)
     #indices = [index for index, element in enumerate(indexofe) if element == wild]
     indices = []
     options = []
     for index, element in enumerate(indexofe):
-        if element == wild:
-            print("pass 1")
+#        if element == wild:
+#            print("pass 1")
         if numindex(colorofe[index],wild)[1] == element:
             print(colorofe[index],element)
             print("pass 2")
             indices.append(element)
             options.append(woption([colorofe[index],element]))
-        print(numindex(colorofe[index],wild)[1])
-        print(element)
+#        print(numindex(colorofe[index],wild)[1])
+#        print(element)
     """
         for ind in indices:
             clr = colorofe[ind]
@@ -158,7 +161,7 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
         print(opt.placement[1] - lastxl[opt.placement[0]])
         print("IMPORTANT: skipped", opt.skipped ,"for ", opt)
 
-    bestoptn = woption.evaluateall(options)
+    bestoptn = woption.evaluateall(options, lists)
 
     if bestoptn == False:
         print("no bestoptn")
@@ -167,10 +170,25 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
     print("bestoptn:")
     bestoptn.displayopt()
 
-    if bestoptn.skipped == 1 or bestoptn.placement[1] == 10: #takes wild if none are skipped or if blocking play 
+    if bestoptn.placement[1] == 10: #takes wild if none are skipped or if blocking play 
         # TODO: Improve skipped number above, probably whole function, makes sure it knows not to block if not 5 xs
+        bestoptnrow = lists[bestoptn.placement[0]]
+        print(bestoptn)
+        if bestoptn.placement[1] == 10:
+            if bestoptnrow.count(1) >= 5:
+                print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
+                addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
+                print("Took human wild")
+                return bestoptn.placement, lists
+            else:
+                return False, lists  
+    elif bestoptn.skipped == 1:
         addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
-        print("Took human wild")
-        return [0,wild], lists
+        print("Took human wild no skip")
+        return bestoptn.placement, lists
     else:
         return False, lists
+    return False, lists
+
+
+

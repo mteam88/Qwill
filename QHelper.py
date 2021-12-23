@@ -294,7 +294,6 @@ def handlegameover(lists, penalty, plyrs, tags):
     print('You can safely close the program now')
     input('Enter to quit')
     quit()
-#    quit() # would be enabled, but sometimes unwanted (closes shell and you can't see score)
 
 
 def aiturn(lists, true_Dice, pnlty, tags, humans):
@@ -321,10 +320,11 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
           ', for a total of ' + str(sum(wilds)) + '.')
     took, lists = takewild(lists, wilds, clrs, true_Dice, addX, emptyspots, numindex, findlastXs)
     if took:
-        print('I took the wild', displists(lists), sep='\n')
         if took[1] == 10:
             print('I blocked a color!')
+            lists == addX(lists, took[0], 11)
             true_Dice[took[0]] = False
+        print('I took the wild', displists(lists), sep='\n')
     if sum(wilds) == 12 or sum(wilds) == 2:
         true_Dice = isblocked(true_Dice)
         if isgameover(true_Dice):
