@@ -1,5 +1,5 @@
 from QHelper import *
-# Matthew Edelen 2021
+# Matthew Edelen 2022
 
 from Qepicenter import *
 InvalidAIUserInput = Exception
@@ -12,7 +12,9 @@ hmncnt = len(tags)
 true_Dice = [True, True, True, True]
 pnlty = 0
 
-for gameloopiter in range(1,50):
+tutorial() #Runs tutorial if user opts into it
+
+for gameloopiter in range(1,100): #master iterator
     print('\n' + '-'*60 + '\n\t\tRound ' + str(gameloopiter) + '\n')
     pnlty, lists, true_Dice = aiturn(lists, true_Dice, pnlty, tags, hmncnt)
 #    input()
@@ -31,17 +33,18 @@ for gameloopiter in range(1,50):
                 raise InvalidAIUserInput('FATAL LOGIC ERROR! Program exiting')
 # Previous lines are just user input cleaning... Kind of excessive...
         tookhmnw, lists = takehumanwild(lists, wildinpt, true_Dice)
+        #print("tookhmnw: ", tookhmnw)
         if tookhmnw:
-            print('I took the wild. ')
             if tookhmnw[1] == 10:
+                print('I blocked a color!')
+                lists == addX(lists, tookhmnw[0], 10)
                 lists == addX(lists, tookhmnw[0], 11)
                 true_Dice[tookhmnw[0]] = False
-                print('I blocked a color.')
-                print(displists(lists))
-                if isgameover(true_Dice):
-                    handlegameover(lists, pnlty, hmncnt, tags)
-        else:
-            print('I did not take the wild. ')
+            print('I took the wild', displists(lists), sep='\n')
+        if tookhmnw and tookhmnw[1] == 10:
+            true_Dice = isblocked(true_Dice)
+            if isgameover(true_Dice):
+                handlegameover(lists, pnlty, hmncnt, tags)
 # Are any new colors blocked?
         true_Dice = isblocked(true_Dice)
         if isgameover(true_Dice):
