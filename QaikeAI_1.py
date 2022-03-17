@@ -1,5 +1,5 @@
 from QHelper import *
-# Matthew Edelen 2021
+# Matthew Edelen 2022
 
 from Qepicenter import *
 InvalidAIUserInput = Exception

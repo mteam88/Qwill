@@ -1,5 +1,4 @@
 # Meat of the AI
-import random as rand
 Penalty = Exception
 
 class woption:
@@ -60,7 +59,7 @@ def bestplay(lists, possible, richter=0, lastxs=False):
         return current
 
     if richter == 2: # BETA
-        llastxs = lastxs(lists)
+        llastxs = QH.lastxs(lists)
         current = (None, 12)
         for val in possible:
             if val[1] == 10:
@@ -72,9 +71,9 @@ def bestplay(lists, possible, richter=0, lastxs=False):
         return current
 
 
-def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastxs):
+def takewild(lists, wilds, clrolls, true_Dice):
 # TODO: Complete helper function (not always false)
-    emptyspotsO = emptyspots(lists, true_Dice)
+    emptyspotsO = QH.emptyspots(lists, true_Dice)
     #print(emptyspotsO)
     wild = sum(wilds)
     #print(wild)
@@ -88,14 +87,14 @@ def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastx
         clr = colorofe[ind]
         #print("color: ", clr)
         #print("wild: ", wild)
-        nio = numindex(clr, wild)
+        nio = QH.numindex(clr, wild)
         #print("nio: ", nio)
         if tuple(nio) in emptyspotsO:
             #print("nio possible: ", nio)
             options.append(woption(nio))
     #print("options: ", options)
 
-    lastxl = lastxs(lists)
+    lastxl = QH.lastxs(lists)
     for option in options:
         option.skipped = option.placement[1] - lastxl[option.placement[0]]
         #print("skipped", option.skipped ,"for ", option)
@@ -108,7 +107,7 @@ def takewild(lists, wilds, clrolls, true_Dice, addX, emptyspots, numindex, lastx
 
     if bestoptn.skipped == 1: #takes wild if none are skipped
         # TODO: Improve skipped number above, probably whole function
-        addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=True)
+        QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=True)
         print("Took wild")
         return [0,wild], lists
     else:
@@ -119,3 +118,7 @@ def takehumanwild(lists, wild, true_Dice):
 # TODO: Complete helper function, remember to only return a blocking play if
 #      has 5 Xs in row to play in
     return False, lists
+
+
+import random as rand
+import QHelper as QH
