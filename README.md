@@ -25,3 +25,11 @@ To create a new notebook, click new in the top right, and then select "Python 3.
 
 ## Issues
 If you have any problems, please open an issue on github.
+
+
+## Documentation
+Using the AI is simple, and there is an embedded help text.
+
+A "QLog.txt" file is created when you finish a game. You can check this to see past games and see how the AI performed.
+
+TO BE CONTINUED!
