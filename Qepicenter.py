@@ -51,7 +51,7 @@ class woption:
 def bestplay(lists, possible, richter=0, lastxs=False):
     if not possible: # Checking if no plays are possible
         raise Penalty # Choosing to take a QWIXX penalty
-# TODO: Complete helper function (not random selection), remember to raise
+# TODO: Remember to raise
 #     Penalty exception when that is AI choice or no choices are passed.
     if richter == 0:
         return rand.choice(possible)
