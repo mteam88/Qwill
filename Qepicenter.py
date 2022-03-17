@@ -18,11 +18,11 @@ class woption:
             if optn.placement[1] == 10 and lists[optn.placement[0]].count(1) >= 5: # always do blocking play
                 return optn # TODO: improve so it checks which blocking play to do if multiple are possible
             if bestskip >= optn.skipped:
-                print(bestskip, optn.skipped)
+                #print(bestskip, optn.skipped)
                 bestskip = optn.skipped
                 bestskipi = i
-        print("bestskip: ",bestskip)
-        print("bestskipi: ",bestskipi)
+        #print("bestskip: ",bestskip)
+        #print("bestskipi: ",bestskipi)
         if bestskipi == "none":
             return False
         return optionsl[bestskipi]
@@ -135,8 +135,8 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
 #        if element == wild:
 #            print("pass 1")
         if numindex(colorofe[index],wild)[1] == element:
-            print(colorofe[index],element)
-            print("pass 2")
+            #print(colorofe[index],element)
+            #print("pass 2")
             indices.append(element)
             options.append(woption([colorofe[index],element]))
 #        print(numindex(colorofe[index],wild)[1])
@@ -152,14 +152,14 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
                 print("nio possible: ", nio)
                 options.append(woption(nio))
     """
-    print("options: ", options)
+    #print("options: ", options)
     lastxl = lastxs(lists)
-    print(lastxl)
+    #print(lastxl)
 
     for opt in options:
         opt.skipped = opt.placement[1] - lastxl[opt.placement[0]]
-        print(opt.placement[1] - lastxl[opt.placement[0]])
-        print("IMPORTANT: skipped", opt.skipped ,"for ", opt)
+        #print(opt.placement[1] - lastxl[opt.placement[0]])
+        #print("IMPORTANT: skipped", opt.skipped ,"for ", opt)
 
     bestoptn = woption.evaluateall(options, lists)
 
@@ -167,8 +167,8 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
         print("no bestoptn")
         return False, lists
 
-    print("bestoptn:")
-    bestoptn.displayopt()
+    #print("bestoptn:")
+    #bestoptn.displayopt()
 
     if bestoptn.placement[1] == 10: #takes wild if none are skipped or if blocking play 
         # TODO: Improve skipped number above, probably whole function, makes sure it knows not to block if not 5 xs
@@ -176,7 +176,7 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
         print(bestoptn)
         if bestoptn.placement[1] == 10:
             if bestoptnrow.count(1) >= 5:
-                print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
+                #print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
                 addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
                 print("Took human wild")
                 return bestoptn.placement, lists
@@ -184,7 +184,7 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
                 return False, lists  
     elif bestoptn.skipped == 1:
         addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
-        print("Took human wild no skip")
+        #print("Took human wild no skip")
         return bestoptn.placement, lists
     else:
         return False, lists

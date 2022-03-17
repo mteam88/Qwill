@@ -33,7 +33,7 @@ for gameloopiter in range(1,100): #master iterator
                 raise InvalidAIUserInput('FATAL LOGIC ERROR! Program exiting')
 # Previous lines are just user input cleaning... Kind of excessive...
         tookhmnw, lists = takehumanwild(lists, wildinpt, true_Dice, emptyspots, numindex, findlastXs, addX, )
-        print("tookhmnw: ", tookhmnw)
+        #print("tookhmnw: ", tookhmnw)
         if tookhmnw:
             if tookhmnw[1] == 10:
                 print('I blocked a color!')
