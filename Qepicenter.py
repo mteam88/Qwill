@@ -189,6 +189,3 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
     else:
         return False, lists
     return False, lists
-
-
-
