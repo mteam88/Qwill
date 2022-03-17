@@ -1,4 +1,4 @@
 Qlog.txt
 QHelperlog.txt
 /__pycache__
-.pyc
+*.pyc
