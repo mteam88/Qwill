@@ -1,5 +1,3 @@
-import random as rand
-from Qepicenter import *
 ProgramEnd = Exception
 Penalty = Exception
 LOGFILE = 'Qlog.txt'
@@ -318,7 +316,7 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     print('\n\t\t\tMy Turn\t\t\t\n')
     print('I rolled a ' + str(wilds[0]) + ' and a ' + str(wilds[1]) +
           ', for a total of ' + str(sum(wilds)) + '.')
-    took, lists = takewild(lists, wilds, clrs, true_Dice, addX, emptyspots, numindex, findlastXs)
+    took, lists = takewild(lists, wilds, clrs, true_Dice)
     if took:
         if took[1] == 10:
             print('I blocked a color!')
@@ -357,3 +355,6 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
 
     print(displists(lists))
     return pnlty, lists, true_Dice
+
+import random as rand
+from Qepicenter import *
