@@ -47,7 +47,7 @@ class woption:
 #    return lists
 
 
-def bestplay(lists, possible, richter=0, lastxs=False):
+def bestplay(lists, possible, richter=0, lastxs=False): #TODO make it so it doesn't take a penalty if it already took a wild, merge functions?
     if not possible: # Checking if no plays are possible
         raise Penalty # Choosing to take a QWIXX penalty
 # TODO: Remember to raise
@@ -65,7 +65,7 @@ def bestplay(lists, possible, richter=0, lastxs=False):
         return current
 
     if richter == 2: # BETA
-        llastxs = QH.lastxs(lists)
+        llastxs = QH.findlastXs(lists)
         current = (None, 12)
         for val in possible:
             if val[1] == 10:
@@ -100,7 +100,7 @@ def takewild(lists, wilds, clrolls, true_Dice):
             options.append(woption(nio))
     #print("options: ", options)
 
-    lastxl = QH.lastxs(lists)
+    lastxl = QH.findlastXs(lists)
     for option in options:
         option.skipped = option.placement[1] - lastxl[option.placement[0]]
         #print("skipped", option.skipped ,"for ", option)
@@ -115,15 +115,15 @@ def takewild(lists, wilds, clrolls, true_Dice):
         # TODO: Improve skipped number above, probably whole function
         QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=True)
         print("Took wild")
-        return [bestoptn.placement[0],wild], lists
+        return [bestoptn.placement[0],bestoptn.placement[1]], lists
     else:
         return False, lists
 
 
-def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
+def takehumanwild(lists, wild, true_Dice):
 # TODO: Complete helper function, remember to only return a blocking play if
 #      has 5 Xs in row to play in
-    emptyspotsO = emptyspots(lists, true_Dice) #empty spots options variable.
+    emptyspotsO = QH.emptyspots(lists, true_Dice) #empty spots options variable.
 #    print(emptyspotsO)
     colorofe,indexofe = map(list, zip(*emptyspotsO)) # disects options into color and index
 #    print(colorofe,indexofe)
@@ -133,26 +133,26 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
     for index, element in enumerate(indexofe):
 #        if element == wild:
 #            print("pass 1")
-        if numindex(colorofe[index],wild)[1] == element:
+        if QH.numindex(colorofe[index],wild)[1] == element:
             #print(colorofe[index],element)
             #print("pass 2")
             indices.append(element)
             options.append(woption([colorofe[index],element]))
-#        print(numindex(colorofe[index],wild)[1])
+#        print(QH.numindex(colorofe[index],wild)[1])
 #        print(element)
     """
         for ind in indices:
             clr = colorofe[ind]
             print("color: ", clr)
             print("wild: ", wild)
-            nio = numindex(clr, wild)
+            nio = QH.numindex(clr, wild)
             print("nio: ", nio)
             if tuple(nio) in emptyspotsO:
                 print("nio possible: ", nio)
                 options.append(woption(nio))
     """
     #print("options: ", options)
-    lastxl = lastxs(lists)
+    lastxl = QH.findlastXs(lists)
     #print(lastxl)
 
     for opt in options:
@@ -169,22 +169,50 @@ def takehumanwild(lists, wild, true_Dice, emptyspots, numindex, lastxs, addX):
     #print("bestoptn:")
     #bestoptn.displayopt()
 
-    if bestoptn.placement[1] == 10: #takes wild if none are skipped or if blocking play 
+    if bestoptn.placement[1] == 10: #takes wild if blocking play 
         # TODO: Improve skipped number above, probably whole function, makes sure it knows not to block if not 5 xs
         bestoptnrow = lists[bestoptn.placement[0]]
         print(bestoptn)
         if bestoptn.placement[1] == 10:
             if bestoptnrow.count(1) >= 5:
-                #print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
-                addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
+                print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
+                QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
                 print("Took human wild")
                 return bestoptn.placement, lists
             else:
                 return False, lists  
     elif bestoptn.skipped == 1:
-        addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
+        QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
         #print("Took human wild no skip")
         return bestoptn.placement, lists
     else:
         return False, lists
     return False, lists
+
+import QHelper as QH
+
+# TODO debug this: ???
+'''
+                Round 2
+
+
+                        My Turn
+
+I rolled a 6 and a 4, for a total of 10.
+Took wild
+I blocked a color!
+I took the wild
+
+Red:    - - - - - - - - - - - -
+Yellow: - - - - - - - - - - - -
+Green:  - X X - - - - - - - - X
+Blue:   X - - - - - - - - - - -
+My rolls are:  [6, 4, 4, 2, 2, 3]
+
+Red:    - - - - - - - - - - - -
+Yellow: - - - - - - - - - - - -
+Green:  - X X - - - - - - - - X
+Blue:   X - - X - - - - - - - -
+
+Human player wilds:  
+'''

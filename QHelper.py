@@ -1,6 +1,7 @@
 ProgramEnd = Exception
 Penalty = Exception
 LOGFILE = 'Qlog.txt'
+import sys
 
 def tutorial():
     """
@@ -290,8 +291,11 @@ def handlegameover(lists, penalty, plyrs, tags):
         print(displists(lists) + '\n', file=logf)
         print('Penalty: ' + str(penalty), file=logf)
     print('You can safely close the program now')
+    #try: # To solve the error "SystemExit: None" then "ValueError: I/O operation on closed file." Not confirmed to fix.
     input('Enter to quit')
-    quit()
+    #except:
+    #    pass
+    sys.exit()
 
 
 def aiturn(lists, true_Dice, pnlty, tags, humans):
