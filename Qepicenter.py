@@ -9,7 +9,7 @@ class woption:
         self.placement = placement
 
     @classmethod
-    def evaluateall(self, optionsl, lists): # TODO: eval by scoreincr if skipped is same
+    def evaluateall(self, optionsl, lists):
         bestskip = 15
         bestskipi = "none"
         optn = False
@@ -18,16 +18,22 @@ class woption:
                 return optn # TODO: improve so it checks which blocking play to do if multiple are possible
             if bestskip >= optn.skipped:
                 if bestskip == optn.skipped:
-                    optnincr = QH.scorelists(addX(lists,optn.placement[0],optn.placement[1]), 0)
-                    bestskipincr = QH.scorelists(addX(lists,bestskip.placement[0],bestskip.placement[1]), 0)
-                    if optnincr >= bestskipincr:
-                        bestskip = optn.skipped
+                    bestskip = morescoreincr(optn, bestskip)
                 bestskipi = i
         #print("bestskip: ",bestskip)
         #print("bestskipi: ",bestskipi)
         if bestskipi == "none":
             return False
         return optionsl[bestskipi]
+    
+    @classmethod
+    def morescoreincr(optn, best):
+        optnincr = QH.scorelists(addX(lists,optn.placement[0],optn.placement[1]), 0)
+        bestskipincr = QH.scorelists(addX(lists,bestskip.placement[0],bestskip.placement[1]), 0)
+        if optnincr >= bestskipincr:
+            return optn
+        else:
+            return best
 
     def displayopt(self): #displays to user (only for debugging)
         print("evaluating", self)
