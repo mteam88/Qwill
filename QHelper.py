@@ -360,5 +360,8 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     print(displists(lists))
     return pnlty, lists, true_Dice
 
+def takewildskipnum(lists, optn, true_Dice):
+    return 1
+
 import random as rand
 from Qepicenter import *

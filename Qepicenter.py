@@ -88,7 +88,6 @@ def bestplay(lists, possible, richter=0, lastxs=False, tookwildthisturn=False):
 
 
 def takewild(lists, wilds, clrolls, true_Dice):
-# TODO: Complete helper function (not always false)
     emptyspotsO = QH.emptyspots(lists, true_Dice)
     #print(emptyspotsO)
     wild = sum(wilds) #finding wilds sum
@@ -191,7 +190,7 @@ def takehumanwild(lists, wild, true_Dice):
                 return bestoptn.placement, lists
             else:
                 return False, lists  
-    elif bestoptn.skipped == 1:
+    elif bestoptn.skipped == QH.takewildskipnum(lists, bestoptn, true_Dice):
         QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
         #print("Took human wild no skip")
         return bestoptn.placement, lists
