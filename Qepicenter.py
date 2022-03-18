@@ -56,7 +56,7 @@ class woption:
 #    return lists
 
 
-def bestplay(lists, possible, richter=0, lastxs=False): #TODO make it so it doesn't take a penalty if it already took a wild, merge functions?
+def bestplay(lists, possible, richter=0, lastxs=False, tookwildthisturn=False): #TODO make it so it doesn't take a penalty if it already took a wild, merge functions?
     if not possible: # Checking if no plays are possible
         raise Penalty # Choosing to take a QWIXX penalty
 # TODO: Remember to raise
@@ -81,7 +81,8 @@ def bestplay(lists, possible, richter=0, lastxs=False): #TODO make it so it does
                 return val
             if val[1] < current[1]:
                 current = val
-        if current[1] - llastxs[current[0]] > 4: #if more than 4 spaces are skipped, take a penalty instead of playing
+        print("took: ", tookwildthisturn)
+        if current[1] - llastxs[current[0]] > 4 and not tookwildthisturn: #if more than 4 spaces are skipped, take a penalty instead of playing
             raise Penalty
         return current
 
