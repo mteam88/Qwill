@@ -172,12 +172,12 @@ def takehumanwild(lists, wild, true_Dice):
     if bestoptn.placement[1] == 10: #takes wild if blocking play 
         # TODO: Improve skipped number above, probably whole function, makes sure it knows not to block if not 5 xs
         bestoptnrow = lists[bestoptn.placement[0]]
-        print(bestoptn)
+        #print(bestoptn)
         if bestoptn.placement[1] == 10:
             if bestoptnrow.count(1) >= 5:
-                print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
+                #print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
                 QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
-                print("Took human wild")
+                #print("Took human wild")
                 return bestoptn.placement, lists
             else:
                 return False, lists  
