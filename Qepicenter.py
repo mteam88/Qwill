@@ -56,7 +56,7 @@ class woption:
 #    return lists
 
 
-def bestplay(lists, possible, richter=0, lastxs=False, tookwildthisturn=False): #TODO make it so it doesn't take a penalty if it already took a wild, merge functions?
+def bestplay(lists, possible, richter=0, lastxs=False, tookwildthisturn=False): 
     if not possible: # Checking if no plays are possible
         raise Penalty # Choosing to take a QWIXX penalty
 # TODO: Remember to raise
