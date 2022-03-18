@@ -17,8 +17,11 @@ class woption:
             if optn.placement[1] == 10 and lists[optn.placement[0]].count(1) >= 5: # always do blocking play
                 return optn # TODO: improve so it checks which blocking play to do if multiple are possible
             if bestskip >= optn.skipped:
-                #print(bestskip, optn.skipped)
-                bestskip = optn.skipped
+                if bestskip == optn.skipped:
+                    optnincr = QH.scorelists(addX(lists,optn.placement[0],optn.placement[1]), 0)
+                    bestskipincr = QH.scorelists(addX(lists,bestskip.placement[0],bestskip.placement[1]), 0)
+                    if optnincr >= bestskipincr:
+                        bestskip = optn.skipped
                 bestskipi = i
         #print("bestskip: ",bestskip)
         #print("bestskipi: ",bestskipi)
@@ -190,29 +193,3 @@ def takehumanwild(lists, wild, true_Dice):
     return False, lists
 
 import QHelper as QH
-
-# TODO debug this: ???
-'''
-                Round 2
-
-
-                        My Turn
-
-I rolled a 6 and a 4, for a total of 10.
-Took wild
-I blocked a color!
-I took the wild
-
-Red:    - - - - - - - - - - - -
-Yellow: - - - - - - - - - - - -
-Green:  - X X - - - - - - - - X
-Blue:   X - - - - - - - - - - -
-My rolls are:  [6, 4, 4, 2, 2, 3]
-
-Red:    - - - - - - - - - - - -
-Yellow: - - - - - - - - - - - -
-Green:  - X X - - - - - - - - X
-Blue:   X - - X - - - - - - - -
-
-Human player wilds:  
-'''
