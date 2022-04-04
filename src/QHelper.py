@@ -1,9 +1,27 @@
-import random as rand
-from Qepicenter import *
 ProgramEnd = Exception
 Penalty = Exception
 LOGFILE = 'Qlog.txt'
+import sys
 
+class Lists(list):
+    def __init__(self, initlist):
+        super().__init__(initlist)
+
+
+def tutorial():
+    """
+    Runs the player through a quick tutorial on how to use the bot.
+    """
+    if input("Would you like a tutorial on how to use Qaike? ('yes' to accept): ") == "yes":
+        print("\n\nQaike Tutorial")
+        print("If you are reading this, you have already initialized the human players in the game.")
+        print("Make sure you have entered each player seperately.")
+        print("\nWhen you start the Qaike AI, have all human players get ready their Qwixx scoresheets")
+        print("The bot/AI always goes first, it will tell you what wild is available")
+        print("The bot will also show you its rolls in the format [firstwild, secondwild, red, yellow, green, blue]")
+        print("\nAll human players should write down their wilds, and then type their wilds")
+        print("\nTell Qaike when your game is done, and it will show you its score and its scorecard")
+        print("\nIf you have any questions, open an issue on Github (https://github.com/Matthews-Makes/Qaike/issues/new/choose)")
 
 def croll(true_Dice):
     """
@@ -136,6 +154,16 @@ def findlastXs(lists):
         final.append(findlastX(row))
     return final
 
+def numindex(color, num):
+    """
+    Similar to rollindex, returns index of "num" in the list "color"
+    color: 1-red, 2-yellow, 3-green, 4-blue
+    """
+    if color >= 2:
+        return [color, 12 - num]
+    else:
+        return [color, num - 2]
+
 
 def rollindex(rolls):
     """
@@ -222,6 +250,7 @@ def isblocked(true_Dice):
     If so, mark colors as blocked (False) in true_dice.
     Returns new true_dice.
     """
+    # TODO: Add functionality so this does not happen if no humans are playing.
     blockinpt = input('Are any new colors blocked?   ')
     while blockinpt:
         if blockinpt:
@@ -267,9 +296,11 @@ def handlegameover(lists, penalty, plyrs, tags):
         print(displists(lists) + '\n', file=logf)
         print('Penalty: ' + str(penalty), file=logf)
     print('You can safely close the program now')
+    #try: # To solve the error "SystemExit: None" then "ValueError: I/O operation on closed file." Not confirmed to fix.
     input('Enter to quit')
-    quit()
-#    quit() # would be enabled, but sometimes unwanted (closes shell and you can't see score)
+    #except:
+    #    pass
+    sys.exit()
 
 
 def aiturn(lists, true_Dice, pnlty, tags, humans):
@@ -296,10 +327,11 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
           ', for a total of ' + str(sum(wilds)) + '.')
     took, lists = takewild(lists, wilds, clrs, true_Dice)
     if took:
-        print('I took the wild', displists(lists), sep='\n')
         if took[1] == 10:
             print('I blocked a color!')
+            lists == addX(lists, took[0], 11)
             true_Dice[took[0]] = False
+        print('I took the wild', displists(lists), sep='\n')
     if sum(wilds) == 12 or sum(wilds) == 2:
         true_Dice = isblocked(true_Dice)
         if isgameover(true_Dice):
@@ -312,7 +344,7 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     # Only "try"ing bestplay because bestplay will raise Penalty exception
     # if that is the best choice.
     try:
-        bestply = bestplay(lists, pos, richter=1, lastxs=findlastXs)
+        bestply = bestplay(lists, pos, richter=2, lastxs=findlastXs, tookwildthisturn=took)
         # Richter (difficulty) can be added here.
 #        print(bestply, '   DEBUG')  # DEBUGGER
         lists = addX(lists, bestply[0], bestply[1])
@@ -332,3 +364,9 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
 
     print(displists(lists))
     return pnlty, lists, true_Dice
+
+def takewildskipnum(lists, optn, true_Dice):
+    return 1
+
+import random as rand
+from src.Qepicenter import *
