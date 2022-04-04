@@ -1,2 +1,2 @@
 tasks:
-- command: python3 QaikeAI_1.py
+- command: python3 main.py
