@@ -198,4 +198,4 @@ def takehumanwild(lists, wild, true_Dice):
         return False, lists
     return False, lists
 
-import QHelper as QH
+import src.QHelper as QH

@@ -364,4 +364,4 @@ def takewildskipnum(lists, optn, true_Dice):
     return 1
 
 import random as rand
-from Qepicenter import *
+from src.Qepicenter import *
