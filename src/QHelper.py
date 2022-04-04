@@ -339,7 +339,7 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     # Only "try"ing bestplay because bestplay will raise Penalty exception
     # if that is the best choice.
     try:
-        bestply = bestplay(lists, pos, richter=2, lastxs=findlastXs)
+        bestply = bestplay(lists, pos, richter=2, lastxs=findlastXs, tookwildthisturn=took)
         # Richter (difficulty) can be added here.
 #        print(bestply, '   DEBUG')  # DEBUGGER
         lists = addX(lists, bestply[0], bestply[1])
@@ -360,5 +360,8 @@ def aiturn(lists, true_Dice, pnlty, tags, humans):
     print(displists(lists))
     return pnlty, lists, true_Dice
 
+def takewildskipnum(lists, optn, true_Dice):
+    return 1
+
 import random as rand
-from Qepicenter import *
+from src.Qepicenter import *

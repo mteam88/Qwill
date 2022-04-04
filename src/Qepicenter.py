@@ -9,7 +9,7 @@ class woption:
         self.placement = placement
 
     @classmethod
-    def evaluateall(self, optionsl, lists): # TODO: eval by scoreincr if skipped is same
+    def evaluateall(self, optionsl, lists):
         bestskip = 15
         bestskipi = "none"
         optn = False
@@ -17,14 +17,23 @@ class woption:
             if optn.placement[1] == 10 and lists[optn.placement[0]].count(1) >= 5: # always do blocking play
                 return optn # TODO: improve so it checks which blocking play to do if multiple are possible
             if bestskip >= optn.skipped:
-                #print(bestskip, optn.skipped)
-                bestskip = optn.skipped
+                if bestskip == optn.skipped:
+                    bestskip = morescoreincr(optn, bestskip)
                 bestskipi = i
         #print("bestskip: ",bestskip)
         #print("bestskipi: ",bestskipi)
         if bestskipi == "none":
             return False
         return optionsl[bestskipi]
+    
+    @classmethod
+    def morescoreincr(optn, best):
+        optnincr = QH.scorelists(addX(lists,optn.placement[0],optn.placement[1]), 0)
+        bestskipincr = QH.scorelists(addX(lists,bestskip.placement[0],bestskip.placement[1]), 0)
+        if optnincr >= bestskipincr:
+            return optn
+        else:
+            return best
 
     def displayopt(self): #displays to user (only for debugging)
         print("evaluating", self)
@@ -47,7 +56,7 @@ class woption:
 #    return lists
 
 
-def bestplay(lists, possible, richter=0, lastxs=False): #TODO make it so it doesn't take a penalty if it already took a wild, merge functions?
+def bestplay(lists, possible, richter=0, lastxs=False, tookwildthisturn=False): 
     if not possible: # Checking if no plays are possible
         raise Penalty # Choosing to take a QWIXX penalty
 # TODO: Remember to raise
@@ -72,13 +81,13 @@ def bestplay(lists, possible, richter=0, lastxs=False): #TODO make it so it does
                 return val
             if val[1] < current[1]:
                 current = val
-        if current[1] - llastxs[current[0]] > 4: #if more than 4 spaces are skipped, take a penalty instead of playing
+        print("took: ", tookwildthisturn)
+        if current[1] - llastxs[current[0]] > 4 and not tookwildthisturn: #if more than 4 spaces are skipped, take a penalty instead of playing
             raise Penalty
         return current
 
 
 def takewild(lists, wilds, clrolls, true_Dice):
-# TODO: Complete helper function (not always false)
     emptyspotsO = QH.emptyspots(lists, true_Dice)
     #print(emptyspotsO)
     wild = sum(wilds) #finding wilds sum
@@ -172,16 +181,16 @@ def takehumanwild(lists, wild, true_Dice):
     if bestoptn.placement[1] == 10: #takes wild if blocking play 
         # TODO: Improve skipped number above, probably whole function, makes sure it knows not to block if not 5 xs
         bestoptnrow = lists[bestoptn.placement[0]]
-        print(bestoptn)
+        #print(bestoptn)
         if bestoptn.placement[1] == 10:
             if bestoptnrow.count(1) >= 5:
-                print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
+                #print("IMPORTANT!!!!:  ", bestoptnrow.count(1))
                 QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
-                print("Took human wild")
+                #print("Took human wild")
                 return bestoptn.placement, lists
             else:
                 return False, lists  
-    elif bestoptn.skipped == 1:
+    elif bestoptn.skipped == QH.takewildskipnum(lists, bestoptn, true_Dice):
         QH.addX(lists, bestoptn.placement[0], bestoptn.placement[1], muffled=False)
         #print("Took human wild no skip")
         return bestoptn.placement, lists
@@ -189,30 +198,4 @@ def takehumanwild(lists, wild, true_Dice):
         return False, lists
     return False, lists
 
-import QHelper as QH
-
-# TODO debug this: ???
-'''
-                Round 2
-
-
-                        My Turn
-
-I rolled a 6 and a 4, for a total of 10.
-Took wild
-I blocked a color!
-I took the wild
-
-Red:    - - - - - - - - - - - -
-Yellow: - - - - - - - - - - - -
-Green:  - X X - - - - - - - - X
-Blue:   X - - - - - - - - - - -
-My rolls are:  [6, 4, 4, 2, 2, 3]
-
-Red:    - - - - - - - - - - - -
-Yellow: - - - - - - - - - - - -
-Green:  - X X - - - - - - - - X
-Blue:   X - - X - - - - - - - -
-
-Human player wilds:  
-'''
+import src.QHelper as QH
