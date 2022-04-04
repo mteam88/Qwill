@@ -3,6 +3,11 @@ Penalty = Exception
 LOGFILE = 'Qlog.txt'
 import sys
 
+class Lists(list):
+    def __init__(self, initlist):
+        super().__init__(initlist)
+
+
 def tutorial():
     """
     Runs the player through a quick tutorial on how to use the bot.
