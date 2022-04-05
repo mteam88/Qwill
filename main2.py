@@ -1,4 +1,5 @@
 import random, sys
+from src2.Evaluaters import LeastSkipped
 
 class Player:
     def __init__(self, tag):
@@ -66,9 +67,9 @@ class XPlay:
                 last = self.findlastXs(card)[i]
                 for ind, _ in enumerate(color[last+1:11]):
                     pempty.append((i, ind+last+1))
-        print("pempty: ", pempty)
+        #print("pempty: ", pempty)
         pos = self.position
-        print("pos: ", pos)
+        #print("pos: ", pos)
         if pos in pempty:
             if pos[1] == 10:
                 if card[pos[0]].count(1) >= 5:
@@ -87,7 +88,7 @@ class XPlay:
         #skipped section
         skipped = self.position[1]- self.findlastXs(card)[self.position[0]]
         #scoreincr section
-        scoreincr = Card(initlist=card, true_Dice=card.true_Dice, penalty=card.penalty).addX(self.position).scoreCard()-card.scoreCard()
+        scoreincr = Card(initlist=list(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(self.position).scoreCard()-card.scoreCard()
         return (skipped,scoreincr)
 
     def disp(self):
@@ -111,35 +112,16 @@ class XPlay:
                 final.append(result)
         return final
 
-
-class Evaluater: #Super Class
-    def __init__(self, xPlays):
-        self.xPlays = xPlays
-    def disp(self):
-        for xPlay in self.xPlays:
-            return xPlay.disp()
-    def evalAll(card):
-        '''
-        To be overidden by child classes.
-        '''
-        pass
-
-class LeastSkipped(Evaluater):
-    def __init__(self, xPlays):
-        super().__init__(xPlays)
-
-    def evalAll(self, card):
-        scoringlist = []
-        for xPlay in self.xPlays: # Looping for ever play added.
-            scoringlist.append([xPlay, xPlay.getScoring(card)]) # Initialize list
-        return scoringlist
-        scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
-        return scoringlist # TODO extend beyond this obviously
-        #return scoringlist[0]
-
 leastSkippedEval = LeastSkipped([XPlay([1, 0], True), XPlay([0, 2], True), XPlay([1, 1], True), XPlay([2, 1], True), XPlay([0, 0], True), XPlay([3, 3], True)])
 print([x[1] for x in leastSkippedEval.evalAll(Card())])
-#card = Card(initlist=[[1,1,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]], true_Dice=[True, True, True, True], penalty=0)
-#print(XPlay([0,0], True).isPossible(card))
 
-target = __import__("test.py")
+testCard = Card(initlist=[[1,1,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,1,1,0,1,0,0], [0,0,0,0,1,1,1,1,1,0,0,0], [1,0,1,0,0,0,0,0,0,0,0,0]], true_Dice=[True, True, True, False], penalty=0)
+
+try: #Tests
+    assert XPlay([0,0], True).isPossible(testCard) == False #Cannot overide previous positions
+    assert XPlay([1,10], True).isPossible(testCard) == False #Cannot lock row if not 5 xs already
+    assert XPlay([2,10], True).isPossible(testCard) == True #Can lock row if 5 xs already
+    assert XPlay([3,5], True).isPossible(testCard) == False #Cannot take play because color is locked
+except AssertionError as e:
+    print("ERROR IN TESTING")
+    #raise e
