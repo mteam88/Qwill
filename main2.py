@@ -87,7 +87,7 @@ class XPlay:
         #skipped section
         skipped = self.position[1]- self.findlastXs(card)[self.position[0]]
         #scoreincr section
-        scoreincr = Card(initlist=card, true_Dice=card.true_Dice, penalty=card.penalty).addX(self.position).scoreCard()
+        scoreincr = Card(initlist=card, true_Dice=card.true_Dice, penalty=card.penalty).addX(self.position).scoreCard()-card.scoreCard()
         return (skipped,scoreincr)
 
     def disp(self):
@@ -132,11 +132,14 @@ class LeastSkipped(Evaluater):
         scoringlist = []
         for xPlay in self.xPlays: # Looping for ever play added.
             scoringlist.append([xPlay, xPlay.getScoring(card)]) # Initialize list
+        return scoringlist
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
         return scoringlist # TODO extend beyond this obviously
         #return scoringlist[0]
 
-leastSkippedEval = LeastSkipped([XPlay([0, 1], True), XPlay([0, 2], True), XPlay([1, 1], True), XPlay([2, 1], True), XPlay([0, 0], True), XPlay([3, 3], True)])
+leastSkippedEval = LeastSkipped([XPlay([1, 0], True), XPlay([0, 2], True), XPlay([1, 1], True), XPlay([2, 1], True), XPlay([0, 0], True), XPlay([3, 3], True)])
 print([x[1] for x in leastSkippedEval.evalAll(Card())])
 #card = Card(initlist=[[1,1,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]], true_Dice=[True, True, True, True], penalty=0)
 #print(XPlay([0,0], True).isPossible(card))
+
+target = __import__("test.py")
