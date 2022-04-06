@@ -1,13 +1,18 @@
 import random, sys
-from src2 import Card, XPlay, Player, LeastSkipped
+from src2 import Card, XPlay, Player, LeastSkipped, AI
 from copy import deepcopy, copy
 gameover = False
 
 player_list = Player.initPlayers()
+mainCard = Card()
+ai = AI(mainCard)
 
 while not gameover:
-    mainCard = Card()
-    
+    ai.eval(ai._getXPlays(mainCard.true_Dice)[0], mainCard)
+    #print(ai._getXPlays(mainCard.true_Dice))
+    for player in player_list:
+        player.getWild()
+
 
 
 
@@ -15,7 +20,7 @@ while not gameover:
 testCard = Card(initlist=[[1,1,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,1,1,0,1,0,0], [0,0,0,0,1,1,1,1,1,0,0,0], [1,0,1,0,0,0,0,0,0,0,0,0]], true_Dice=[True, True, True, False], penalty=0)
 
 leastSkippedEval = LeastSkipped([XPlay([1, 0], True), XPlay([0, 2], True), XPlay([1, 1], True), XPlay([2, 1], True), XPlay([0, 0], True), XPlay([3, 3], True)])
-print([x[1] for x in leastSkippedEval.evalAll(testCard)])
+#print([x[1] for x in leastSkippedEval.evalAll(testCard)])
 '''
 otherCard = Card(initlist=[[1,1,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,1,1,0,1,0,0], [0,0,0,0,1,1,1,1,1,0,0,0], [1,0,1,0,0,0,0,0,0,0,0,0]], true_Dice=[True, True, True, False], penalty=0)
 

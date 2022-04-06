@@ -1,4 +1,4 @@
-#import Evaluaters
+from Evaluaters import *
 from random import randint
 from Scoresheet import XPlay
 
@@ -6,7 +6,10 @@ class AI:
     '''
     Class that interprets card state and decides what to do based on Evaluaters and Card
     '''
-    def getXPlays(self, true_Dice):
+    def __init__(self, card):
+        self.card = card
+
+    def _getXPlays(self, true_Dice):
         '''
         returns list that contains XPlay objects for 'False' dice, but 'False' for 'True' dice also returns rolls
         Rolls dice by self
@@ -37,3 +40,8 @@ class AI:
         for i in range(4): #for all colors that the two wilds added could go in
             plays.append(XPlay([i,sum(rolls[0:2])], True)) # append wild play for every color
         return plays, rolls #return data
+    
+
+    def eval(self, playslist, card):
+        lse = LeastSkipped(playslist)
+        #print("evalall out: ", lse.evalAll(card))

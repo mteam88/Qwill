@@ -4,7 +4,7 @@ class Evaluater: #Super Class
     def disp(self):
         for xPlay in self.xPlays:
             return xPlay.disp()
-    def evalAll(card):
+    def evalAll(self, card):
         '''
         To be overidden by child classes.
         '''
@@ -16,8 +16,10 @@ class LeastSkipped(Evaluater):
 
     def evalAll(self, card):
         scoringlist = []
-        for xPlay in self.xPlays: # Looping for ever play added.
+        print("XPlays, ", self.xPlays)
+        for xPlay in self.xPlays: # Looping for every play added.
             scoringlist.append([xPlay, xPlay.getScoring(card)]) # Initialize list
-        return scoringlist
+        #return scoringlist
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
-        return scoringlist # TODO extend beyond this obviously
+        #print("to be returned: ", scoringlist[0][0])
+        return scoringlist[0][0] # TODO extend beyond this obviously
