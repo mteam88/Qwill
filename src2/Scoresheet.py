@@ -1,11 +1,12 @@
 from copy import deepcopy, copy
 
 class Card(list):
-    def __init__(self, initlist=[[0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]], true_Dice=[False, False, False, False], penalty=0):
+    def __init__(self, initlist=[[0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]], true_Dice=[False, False, False, False], penalty=0, roundnum=1):
         super().__init__(initlist)
         self.SCORELIST = [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78]
         self.true_Dice = true_Dice
         self.penalty = penalty
+        self.roundnum = roundnum
 
     def addX(self, position, muffled=False):
         """
@@ -37,9 +38,10 @@ class Card(list):
         return list(self)
 
 class XPlay:
-    def __init__(self, position, isWild):
+    def __init__(self, position, isWild, hmnWild=False):
         self.position = position
         self.isWild = isWild
+        self.hmnWild = hmnWild
     def isPossible(self, card):
         '''
         Accepts Card object, returns boolean. True if the play is possible according to Qwixx rules
@@ -70,10 +72,10 @@ class XPlay:
         '''
         #print(self.findlastXs(card))
         #skipped section
-        print("lastx of row: ", self.findlastXs(card)[self.position[0]])
-        print("position in question: ", self.position[1])
-        skipped = self.position[1]- self.findlastXs(card)[self.position[0]]
-        print("skipped: ", skipped)
+        #print("lastx of row: ", self.findlastXs(card)[self.position[0]])
+        #print("position in question: ", self.position[1])
+        skipped = self.position[1]- self.findlastXs(card)[self.position[0]] - 1
+        #print("skipped: ", skipped)
         #scoreincr section
         scoreincr = Card(initlist=deepcopy(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(self.position).scoreCard()-card.scoreCard()
         return (skipped,scoreincr)

@@ -1,4 +1,5 @@
-InputError = Exception()
+class InputError(Exception):
+    pass
 
 class Player:
     def __init__(self, tag):
@@ -12,7 +13,7 @@ class Player:
                     return response
                 else:
                     raise InputError
-            except InputError:
+            except (InputError,ValueError):
                 print("Please input a valid wild between 2 and 12")
     @classmethod
     def initPlayers(cls):

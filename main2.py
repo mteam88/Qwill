@@ -4,14 +4,26 @@ from copy import deepcopy, copy
 gameover = False
 
 player_list = Player.initPlayers()
-mainCard = Card()
-ai = AI(mainCard)
+main_card = Card()
+ai = AI(main_card)
 
 while not gameover:
-    ai.eval(ai._getXPlays(mainCard.true_Dice)[0], mainCard)
-    #print(ai._getXPlays(mainCard.true_Dice))
+    print("\nAI turn: (begin round "+str(main_card.roundnum)+" )")
+    took = ai.eval(ai._getXPlays(main_card.true_Dice)[0], main_card)
+    if took == True:
+        print("Took a play")
+    else:
+        main_card.penalty += 5
+        print("Took a penalty")
+    #print(ai._getXPlays(main_card.true_Dice))
     for player in player_list:
-        player.getWild()
+        print("Player(s) turn(s): ")
+        took = ai.eval(AI._getXPlaysfromwild(player.getWild(), hmnWild=True), main_card)
+        if took == True:
+            print("Took that wild")
+        else:
+            print("Did not take that wild")
+    main_card.roundnum += 1 #Update round counter
 
 
 

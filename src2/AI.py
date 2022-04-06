@@ -37,11 +37,26 @@ class AI:
                     else: #Means number is yellow or red
                         for i, _ in enumerate(realrolls): #for both numbers in realrolls (added each wild to color)
                             plays.append(XPlay([j, realrolls[i] - 2], False)) # val - 2 to get index from number
-        for i in range(4): #for all colors that the two wilds added could go in
-            plays.append(XPlay([i,sum(rolls[0:2])], True)) # append wild play for every color
+        plays += AI._getXPlaysfromwild(sum(rolls[0:2])) # Get all of the wild plays
         return plays, rolls #return data
-    
+
+    @classmethod
+    def _getXPlaysfromwild(cls, wildint, hmnWild=False):
+        plays = []
+        for i in range(2): #for red and yellow that the two wilds added could go in
+            plays.append(XPlay([i,wildint], True, hmnWild=hmnWild)) # append wild play for every color
+        for i in range(2): #for blue and green that the two wilds added could go in
+            plays.append(XPlay([i,12-wildint], True, hmnWild=hmnWild)) # append wild play for every color
+        return plays
 
     def eval(self, playslist, card):
         lse = LeastSkipped(playslist)
+        lseout = lse.evalAll(card)
+        if lseout != False:
+            took=True
+            card.addX(lseout.position)
+            print(card)
+        else:
+            took=False
+        return took
         #print("evalall out: ", lse.evalAll(card))
