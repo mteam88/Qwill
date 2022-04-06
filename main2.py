@@ -1,8 +1,16 @@
 import random, sys
-from src2.Evaluaters import LeastSkipped
-from src2.Scoresheet import XPlay, Card
-from src2.Player import Player
+from src2 import Card, XPlay, Player, LeastSkipped
 from copy import deepcopy, copy
+gameover = False
+
+player_list = Player.initPlayers()
+
+while not gameover:
+    mainCard = Card()
+    
+
+
+
 
 testCard = Card(initlist=[[1,1,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,1,1,0,1,0,0], [0,0,0,0,1,1,1,1,1,0,0,0], [1,0,1,0,0,0,0,0,0,0,0,0]], true_Dice=[True, True, True, False], penalty=0)
 

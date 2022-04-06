@@ -1,3 +1,5 @@
+from copy import deepcopy, copy
+
 class Card(list):
     def __init__(self, initlist=[[0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]], true_Dice=[True, True, True, True], penalty=0):
         super().__init__(initlist)
@@ -77,7 +79,7 @@ class XPlay:
         return (skipped,scoreincr)
 
     def disp(self):
-        return __dict__
+        return self.position, self.isWild
    
     @classmethod
     def findlastXs(cls, card):
