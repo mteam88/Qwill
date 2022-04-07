@@ -38,10 +38,10 @@ class Card(list):
         return list(self)
 
 class XPlay:
-    def __init__(self, position, isWild, hmnWild=False):
+    def __init__(self, position, isWild, plyrWild=False):
         self.position = position
         self.isWild = isWild
-        self.hmnWild = hmnWild
+        self.plyrWild = plyrWild
     def isPossible(self, card):
         '''
         Accepts Card object, returns boolean. True if the play is possible according to Qwixx rules
