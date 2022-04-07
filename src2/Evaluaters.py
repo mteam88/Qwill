@@ -28,4 +28,4 @@ class LeastSkipped(Evaluater):
                 return bestXPlayinfo[0]
             else:
                 return False
-        return bestXPlayinfo[0] # TODO extend beyond this obviously 
+        return [bestXPlayinfo[0]] # TODO extend so takes wild then color play on turn if possible

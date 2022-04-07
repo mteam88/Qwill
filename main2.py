@@ -3,9 +3,8 @@ from src2 import Card, XPlay, Player, LeastSkipped, AI
 from copy import deepcopy, copy
 gameover = False
 
-player_list = Player.initPlayers()
 main_card = Card()
-ai = AI(main_card)
+player_list = Player.initPlayers(main_card)
 
 while not gameover:
     print("\nAI turn: (begin round "+str(main_card.roundnum)+" )")
