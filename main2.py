@@ -1,5 +1,5 @@
 import random, sys
-from src2 import Card, XPlay, Player, LeastSkipped, AI
+from src2 import Card, XPlay, Player, LeastSkipped, AI, Human
 from copy import deepcopy, copy
 gameover = False
 
@@ -7,21 +7,14 @@ main_card = Card()
 player_list = Player.initPlayers(main_card)
 
 while not gameover:
-    print("\nAI turn: (begin round "+str(main_card.roundnum)+" )")
-    took = ai.eval(ai._getXPlays(main_card.true_Dice)[0], main_card)
-    if took == True:
-        print("Took a play")
-    else:
-        main_card.penalty += 5
-        print("Took a penalty")
-    #print(ai._getXPlays(main_card.true_Dice))
-    for player in player_list:
-        print("Player(s) turn(s): ")
-        took = ai.eval(AI._getXPlaysfromwild(player.getWild(), hmnWild=True), main_card)
-        if took == True:
-            print("Took that wild")
+    for player in player_list: # Loop through all players
+        print("Round "+str(main_card.roundnum))
+        took, wild = player.turn(main_card)
+        if took != []: # If player took value
+            print(took) # debug only
         else:
             print("Did not take that wild")
+        # TODO: go through all players and run '.wild()' method on them
     main_card.roundnum += 1 #Update round counter
 
 

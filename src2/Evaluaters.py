@@ -21,11 +21,11 @@ class LeastSkipped(Evaluater):
             scoringlist.append([xPlay, xPlay.getScoring(card)]) # Initialize list
         #return scoringlist
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
-        print("to be returned: ", scoringlist[0][0].__dict__)
+        #print("to be returned: ", scoringlist[0][0].__dict__)
         bestXPlayinfo = scoringlist[0]
         if bestXPlayinfo[0].hmnWild == True: #This means that we might not have to take the XPlay
             if bestXPlayinfo[1][0] <= 1: #Only take if skips 1 or none TODO: improve this
-                return bestXPlayinfo[0]
+                return [bestXPlayinfo[0]]
             else:
-                return False
+                return [] #Empty because should be taken.
         return [bestXPlayinfo[0]] # TODO extend so takes wild then color play on turn if possible

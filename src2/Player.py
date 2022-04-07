@@ -6,14 +6,19 @@ class InputError(Exception):
     pass
 
 class Player:
-    def __init__(self, tag, card):
+    def __init__(self, tag):
         self.tag = tag
     def getWild(self):
         '''Get wild from player. Returns number that was rolled, not XPlay or index. Should be overwritten.'''
         pass
     def turn(self):
-        '''Take turn. Returns [any/all XPlays used list(empty if none or human), wild (as a number)]'''
+        '''Take turn. Returns [dict object with {bool True if took X (False on penalty), any/all XPlays used list(empty if none or human)}
+            , wild (as a number)]'''
         pass
+    def wild(self):
+        '''Decide if should take wild based on card. Returns Returns [dict object with {bool True if took X (False on penalty)
+            , any/all XPlays used list(empty if none or human)}
+            , wild (as a number)]'''
     @classmethod
     def initPlayers(cls, card):
         '''
@@ -27,34 +32,38 @@ class Player:
                     players.append(AI(tag, card))
                 else:
                     players.append(Human(tag, card))
+            else: break
         print('Selected player names/tags:', [player.tag for player in players], sep='\n')
         return players
 
 class Human(Player):
-    def __init__(tag):
+    def __init__(self, tag, card):
         super().__init__(tag)
-        self.tag = tag
-        self.card = card        
+        #self.tag = tag
+        self.card = card  # Not used      
     def turn(self, card):
         while True:
             response = input(self.tag+", please enter your wild (2-12): ")
             try:
                 response = int(response)
                 if response in range(2,13):
-                    return response
+                    return [[], response]
                 else:
                     raise InputError
             except (InputError,ValueError):
                 print("Please input a valid integer wild between 2 and 12")
+    def wild(self, wild):
+        pass
+
 
 class AI(Player):
     '''
     Class that interprets card state and decides what to do based on Evaluaters and Card
     '''
-    def __init__(tag):
+    def __init__(self, tag, card):
         super().__init__(tag)
-        self.tag = tag
-        self.card = card
+        #self.tag = tag
+        self.card = card # Not used
 
     def _getXPlays(self, true_Dice):
         '''
@@ -90,14 +99,18 @@ class AI(Player):
     def turn(self, card):
         playslist, rolls = self._getXPlays(card.true_Dice)
         plays = self.eval(playslist, card)
-        took = []
-        for play in plays:
-            if plays[0] != False:
-                took.append(play)
+        took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
+        if plays != []:
+            for play in plays: # Add penalty taking functionality (if plays == [])
+                took["didtake"] = True
+                took["tookwhat"].append(play)
                 card.addX(play.position)
                 print("Card after turn: ", card)
-            else:
-                took=[] # Explicit is better than implicit
+        elif plays == []:
+            took["didtake"] = False
+            took["tookwhat"] = []
+        else:
+            print("Warning: plays is unusual.(at AI.turn() method)")
         return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
 
     @classmethod
@@ -113,3 +126,8 @@ class AI(Player):
         lse = LeastSkipped(playslist)
         return lse.evalAll(card)
         #print("evalall out: ", lse.evalAll(card))
+
+class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
+    def __init__(self, dict):
+        super().__init__(dict)
+        return self
