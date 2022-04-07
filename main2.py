@@ -3,22 +3,23 @@ from src2 import Card, XPlay, Player, LeastSkipped, AI, Human
 from copy import deepcopy, copy
 gameover = False
 
-main_card = Card()
-player_list = Player.initPlayers(main_card)
+player_list = Player.initPlayers()
 
 while not gameover:
-    print("\nRound "+str(main_card.roundnum))
+    print("\nRound "+str(player_list[0].card.roundnum)) #Using first player's roundnum, perhaps change to a class called GameState or something
     for player in player_list: # Loop through all players
-        took, wild = player.turn(main_card)
+        took, wild = player.turn(player.card)
         if took != []: # If player took value
             print(took) # debug only
         else:
             print("Did not take that wild")
         # TODO: go through all players and run '.wild()' method on them
         for player in player_list:
-            player.wild(wild, card=main_card)
-    print(player.tag+"'s card after round: ", main_card)
-    main_card.roundnum += 1 #Update round counter
+            player.wild(wild, card=player.card)
+    for player in player_list: 
+        player.card.roundnum += 1 #Update round counter for all players
+        if isinstance(player, AI):
+            print(player.tag+"'s card after round: ", player.card)
 
 
 

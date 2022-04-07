@@ -1,6 +1,6 @@
 from Evaluaters import *
 from random import randint
-from Scoresheet import XPlay
+from Scoresheet import XPlay, Card
 
 class InputError(Exception):
     pass
@@ -20,7 +20,7 @@ class Player:
             , any/all XPlays used list(empty if none or human)}
             , wild (as a number)]'''
     @classmethod
-    def initPlayers(cls, card):
+    def initPlayers(cls):
         '''
         Initialize all players. Returns list of Human and AI objects (with Player superclassed).
         '''
@@ -29,9 +29,9 @@ class Player:
             tag = input('\nPlayer name/tag (blank entry aborts) (prefix with "cpu_" to create a cpu): ')
             if tag != '':
                 if tag.split('_')[0] == 'cpu':
-                    players.append(AI(tag, card))
+                    players.append(AI(tag, Card()))
                 else:
-                    players.append(Human(tag, card))
+                    players.append(Human(tag, Card()))
             else: break
         print('Selected player names/tags:', [player.tag for player in players], sep='\n')
         return players
