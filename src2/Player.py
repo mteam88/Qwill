@@ -52,7 +52,7 @@ class Human(Player):
                     raise InputError
             except (InputError,ValueError):
                 print("Please input a valid integer wild between 2 and 12")
-    def wild(self, wild):
+    def wild(self, wild, card=None):
         pass
 
 
@@ -99,18 +99,7 @@ class AI(Player):
     def turn(self, card):
         playslist, rolls = self._getXPlays(card.true_Dice)
         plays = self.eval(playslist, card)
-        took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
-        if plays != []:
-            for play in plays: # Add penalty taking functionality (if plays == [])
-                took["didtake"] = True
-                took["tookwhat"].append(play)
-                card.addX(play.position)
-                print("Card after turn: ", card)
-        elif plays == []:
-            took["didtake"] = False
-            took["tookwhat"] = []
-        else:
-            print("Warning: plays is unusual.(at AI.turn() method)")
+        took = self._gettookfromplays(plays, card)
         return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
 
     @classmethod
@@ -122,12 +111,35 @@ class AI(Player):
             plays.append(XPlay([i,12-wildint], True, hmnWild=hmnWild)) # append wild play for every color
         return plays
 
+    @classmethod
+    def _gettookfromplays(cls, plays, card):
+        '''Helper function to get Took object from list of XPlays selected by eval() method'''
+        took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
+        if plays != []:
+            for play in plays: # Add penalty taking functionality (if plays == [])
+                took["didtake"] = True
+                took["tookwhat"].append(play)
+                card.addX(play.position)
+        elif plays == []:
+            took["didtake"] = False
+            took["tookwhat"] = []
+        else:
+            print("Warning: plays is unusual.(at AI._gettookfromplays() classmethod)")
+        return took
+
     def eval(self, playslist, card):
         lse = LeastSkipped(playslist)
         return lse.evalAll(card)
         #print("evalall out: ", lse.evalAll(card))
+    
+    def wild(self, wild, card=None):
+        if card == None:
+            raise Exception('No card passed to AI.wild()')
+        plays = self.eval(self._getXPlaysfromwild(wild), card)
+        took = self._gettookfromplays(plays, card)
+        return took
+        
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
     def __init__(self, dict):
         super().__init__(dict)
-        return self

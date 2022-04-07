@@ -16,7 +16,7 @@ class Card(list):
         position[1]: index of to add "1" (0,1,2...,10,11)
         """
         try:
-            self[position[0]][position[1]] = 1
+            self[position[0]][position[1]] = 1 #TODO: debug "IndexError: list assignment index out of range"
         except IndexError as e:
             print('ERROR')
             if not muffled:
