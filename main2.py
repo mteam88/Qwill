@@ -34,7 +34,6 @@ otherCard = Card(initlist=[[1,1,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,1,1,0,1,0,0],
 
 x = testCard.getLists()
 newCard = Card(initlist=deepcopy(testCard))
-newCard.addX([0,2])
 print(repr(testCard))
 print(repr(newCard))
 print(repr(otherCard))'''

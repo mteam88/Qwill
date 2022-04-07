@@ -8,7 +8,7 @@ class Card(list):
         self.penalty = penalty
         self.roundnum = roundnum
 
-    def addX(self, position, muffled=False):
+    def addX(self, xplay, muffled=False):
         """
         Adds "1" to position[0]'s position[1]
         self: a Card object
@@ -16,7 +16,7 @@ class Card(list):
         position[1]: index of to add "1" (0,1,2...,10,11)
         """
         try:
-            self[position[0]][position[1]] = 1 #TODO: debug "IndexError: list assignment index out of range"
+            self[xplay.position[0]][xplay.position[1]] = 1 #TODO: debug TypeError: 'XPlay' object is not subscriptable
         except IndexError as e:
             print('ERROR')
             if not muffled:
@@ -77,7 +77,7 @@ class XPlay:
         skipped = self.position[1]- self.findlastXs(card)[self.position[0]] - 1
         #print("skipped: ", skipped)
         #scoreincr section
-        scoreincr = Card(initlist=deepcopy(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(self.position).scoreCard()-card.scoreCard()
+        scoreincr = Card(initlist=deepcopy(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(self).scoreCard()-card.scoreCard()
         return (skipped,scoreincr)
 
     def disp(self):

@@ -1,6 +1,7 @@
 from Evaluaters import *
 from random import randint
 from Scoresheet import XPlay, Card
+from warnings import warn
 
 class InputError(Exception):
     pass
@@ -119,12 +120,12 @@ class AI(Player):
             for play in plays: # Add penalty taking functionality (if plays == [])
                 took["didtake"] = True
                 took["tookwhat"].append(play)
-                card.addX(play.position)
+                card.addX(play)
         elif plays == []:
             took["didtake"] = False
             took["tookwhat"] = []
         else:
-            print("Warning: plays is unusual.(at AI._gettookfromXPlays() classmethod)")
+            warn("Warning: plays is unusual.(at AI._gettookfromXPlays() classmethod)")
         return took
 
     def eval(self, playslist, card):
@@ -135,12 +136,19 @@ class AI(Player):
     def wild(self, wild, card=None):
         if card == None:
             raise Exception('No card passed to AI.wild()')
-        plays = self.eval(self._getXPlaysfromwild(wild, plyrWild=True), card)[0] # Note the [0] bit, eval can only return one best for human wild
-        card.addX(play)
-        took = self._gettookfromXPlays(plays, card)
+        plays = self.eval(self._getXPlaysfromwild(wild, plyrWild=True), card)
+        if plays != []:
+            print(plays[0], plays[0].position)
+            card.addX(plays[0])  # Note the [0] bit, eval can only return one best for human wild
+            took = self._gettookfromXPlays(plays, card)
+        else:
+            took = Took({"didtake": None, "tookwhat": []})
         return took
         
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
+    '''
+    dict should be {"didtake": (None for did not take, False for took penalty, True for took X(s)), "tookwhat": list of XPlays that was taken}
+    '''
     def __init__(self, dict):
         super().__init__(dict)
