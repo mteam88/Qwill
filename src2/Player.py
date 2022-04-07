@@ -99,20 +99,20 @@ class AI(Player):
     def turn(self, card):
         playslist, rolls = self._getXPlays(card.true_Dice)
         plays = self.eval(playslist, card)
-        took = self._gettookfromplays(plays, card)
+        took = self._gettookfromXPlays(plays, card)
         return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
 
     @classmethod
-    def _getXPlaysfromwild(cls, wildint, hmnWild=False):
+    def _getXPlaysfromwild(cls, wildint, plyrWild=False):
         plays = []
         for i in range(2): #for red and yellow that the two wilds added could go in
-            plays.append(XPlay([i,wildint], True, hmnWild=hmnWild)) # append wild play for every color
+            plays.append(XPlay([i,wildint], True, plyrWild=plyrWild)) # append wild play for every color
         for i in range(2): #for blue and green that the two wilds added could go in
-            plays.append(XPlay([i,12-wildint], True, hmnWild=hmnWild)) # append wild play for every color
+            plays.append(XPlay([i,12-wildint], True, plyrWild=plyrWild)) # append wild play for every color
         return plays
 
     @classmethod
-    def _gettookfromplays(cls, plays, card):
+    def _gettookfromXPlays(cls, plays, card):
         '''Helper function to get Took object from list of XPlays selected by eval() method'''
         took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
         if plays != []:
@@ -124,7 +124,7 @@ class AI(Player):
             took["didtake"] = False
             took["tookwhat"] = []
         else:
-            print("Warning: plays is unusual.(at AI._gettookfromplays() classmethod)")
+            print("Warning: plays is unusual.(at AI._gettookfromXPlays() classmethod)")
         return took
 
     def eval(self, playslist, card):
@@ -135,8 +135,9 @@ class AI(Player):
     def wild(self, wild, card=None):
         if card == None:
             raise Exception('No card passed to AI.wild()')
-        plays = self.eval(self._getXPlaysfromwild(wild), card)
-        took = self._gettookfromplays(plays, card)
+        plays = self.eval(self._getXPlaysfromwild(wild, plyrWild=True), card)[0] # Note the [0] bit, eval can only return one best for human wild
+        card.addX(play)
+        took = self._gettookfromXPlays(plays, card)
         return took
         
 
