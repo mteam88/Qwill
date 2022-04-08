@@ -126,7 +126,7 @@ class AI(Player):
         '''Helper function to get Took object from list of XPlays selected by eval() method'''
         took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
         if plays != []:
-            for play in plays: # Add penalty taking functionality (if plays == [])
+            for play in plays: # Add penalty taking functionality (if plays == []) !!!TypeError: 'NoneType' object is not iterable
                 took["didtake"] = True
                 took["tookwhat"].append(play)
                 card.addX(play)
