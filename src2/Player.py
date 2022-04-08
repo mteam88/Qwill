@@ -2,6 +2,7 @@ from Evaluaters import *
 from random import randint
 from Scoresheet import XPlay, Card
 from warnings import warn
+import logging
 
 class InputError(Exception):
     pass
@@ -44,7 +45,7 @@ class Human(Player):
         self.card = card  # Not used      
     def turn(self, card):
         while True:
-            response = input(self.tag+", please enter your wild (2-12): ")
+            response = input(f'{self.tag}, please enter your wild (2-12): ')
             try:
                 response = int(response)
                 if response in range(2,13):
@@ -102,6 +103,7 @@ class AI(Player):
         playslist, rolls = self._getXPlays(card.true_Dice)
 
         plays = self.eval(playslist, card)
+        logging.info(f"Took from XPlays input: {plays}")
         took = self._gettookfromXPlays(plays, card)
         return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
 
@@ -126,9 +128,12 @@ class AI(Player):
         '''Helper function to get Took object from list of XPlays selected by eval() method'''
         took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
         if plays != []:
+            logging.info(f"Plays: {plays}")
             for play in plays: # Add penalty taking functionality (if plays == []) !!!TypeError: 'NoneType' object is not iterable
                 took["didtake"] = True
                 took["tookwhat"].append(play)
+                if plays[0].position[1] == 10:
+                    card.addX(XPlay([play.position[0], 11], False))
                 card.addX(play)
         elif plays == []:
             took["didtake"] = False
@@ -138,12 +143,13 @@ class AI(Player):
         return took
 
     def eval(self, playslist, card):
+        logging.info(f"Old Playslist: {playslist}")
+        playslist = self._getpossiblefromplays(playslist, card)
+        logging.info(f"New Playlist: {playslist}")
         lse = LeastSkipped(playslist)
         plays = lse.evalAll(card)
-        print(plays)
-        plays = self._getpossiblefromplays(plays, card)
-        print("New: ", plays)
-        #print("evalall out: ", lse.evalAll(card))
+        logging.info(f"evalall out: {lse.evalAll(card)}")
+        return plays
     
     def wild(self, wild, card=None):
         print("WILD CALLED")
@@ -154,6 +160,8 @@ class AI(Player):
         if plays != []:
             #print(plays[0], plays[0].position)
             card.addX(plays[0])  # Note the [0] bit, eval can only return one best for human wild
+            if plays[0].position[1] == 10:
+                card.addX(XPlay([plays[0].position[0], 11], True))
             took = self._gettookfromXPlays(plays, card)
         else:
             took = Took({"didtake": None, "tookwhat": []})

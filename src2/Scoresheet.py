@@ -1,4 +1,5 @@
 from copy import deepcopy, copy
+import logging
 
 class Card(list):
     def __init__(self, initlist=None, true_Dice=None, penalty=0, roundnum=1):
@@ -48,7 +49,7 @@ class XPlay:
         self.isWild = isWild
         self.plyrWild = plyrWild
     
-    def __repr__(self):
+    def disp(self):
         return (self.position, self.isWild, self.plyrWild).__repr__()
 
     def isPossible(self, card):
@@ -89,8 +90,6 @@ class XPlay:
         scoreincr = Card(initlist=deepcopy(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(self).scoreCard()-card.scoreCard()
         return (skipped,scoreincr)
 
-    def disp(self):
-        return self.position, self.isWild
    
     @classmethod
     def findlastXs(cls, card):

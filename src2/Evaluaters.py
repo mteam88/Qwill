@@ -1,3 +1,4 @@
+import logging
 class Evaluater: #Super Class
     def __init__(self, xPlays):
         self.xPlays = xPlays
@@ -22,11 +23,21 @@ class LeastSkipped(Evaluater):
         #return scoringlist
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
         #print("to be returned: ", scoringlist[0][0].__dict__)
-        bestXPlayinfo = scoringlist[0]
+        if scoringlist:
+            bestXPlayinfo = scoringlist[0]
+        else:
+            logging.info("None to take in evalAll")
+            return []
+        if bestXPlayinfo[0].position[1] == 10:
+            return [bestXPlayinfo[0]]
         if bestXPlayinfo[0].plyrWild == True: #This means that we might not have to take the XPlay
             print("skipped: ", bestXPlayinfo[1][0])
+            logging.info(f"position: {bestXPlayinfo[0].position}")
             if bestXPlayinfo[1][0] <= 2: #Only take if skips 1 or none TODO: improve this
+                logging.info([bestXPlayinfo[0]])
                 return [bestXPlayinfo[0]]
             else:
+                logging.info([])
                 return [] #Empty because should be taken.
+        logging.info([bestXPlayinfo[0]])
         return [bestXPlayinfo[0]] # TODO extend so takes wild then color play on turn if possible
