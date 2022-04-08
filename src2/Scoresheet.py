@@ -40,7 +40,7 @@ class Card(list):
             scr += self.SCORELIST[self[i].count(1)]
         return scr
     
-    def getLists(self): #Test
+    def getLists(self): #DELETE ME
         return list(self)
 
 class XPlay:
