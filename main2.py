@@ -7,15 +7,23 @@ player_list = Player.initPlayers()
 
 while not gameover:
     print("\nRound "+str(player_list[0].card.roundnum)) #Using first player's roundnum, perhaps change to a class called GameState or something
-    for player in player_list: # Loop through all players
+    for i, player in enumerate(player_list): # Loop through all players
         took, wild = player.turn(player.card)
-        if took != []: # If player took value
-            print(took) # debug only
-        else:
-            print("Did not take that wild")
-        # TODO: go through all players and run '.wild()' method on them
-        for player in player_list:
-            player.wild(wild, card=player.card)
+        if isinstance(player, AI):
+            if took != []: # If player took value
+                print(took) # debug only
+            else:
+                print(took)
+                print("Did not take that play")
+            print(player.tag+"'s card after turn: ", player.card)
+        for player in player_list: # call .wild on all players
+            if player != player_list[i]: #If player is not going right now
+                took = player.wild(wild, card=player.card)
+                if took != []: # If player took value
+                    print("took1:", took) # debug only
+                else:
+                    print("took2:", took)
+                    print("Did not take that wild")
     for player in player_list: 
         player.card.roundnum += 1 #Update round counter for all players
         if isinstance(player, AI):

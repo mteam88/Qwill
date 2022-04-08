@@ -24,7 +24,8 @@ class LeastSkipped(Evaluater):
         #print("to be returned: ", scoringlist[0][0].__dict__)
         bestXPlayinfo = scoringlist[0]
         if bestXPlayinfo[0].plyrWild == True: #This means that we might not have to take the XPlay
-            if bestXPlayinfo[1][0] <= 1: #Only take if skips 1 or none TODO: improve this
+            print("skipped: ", bestXPlayinfo[1][0])
+            if bestXPlayinfo[1][0] <= 2: #Only take if skips 1 or none TODO: improve this
                 return [bestXPlayinfo[0]]
             else:
                 return [] #Empty because should be taken.

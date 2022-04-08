@@ -1,7 +1,11 @@
 from copy import deepcopy, copy
 
 class Card(list):
-    def __init__(self, initlist=[[0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]], true_Dice=[False, False, False, False], penalty=0, roundnum=1):
+    def __init__(self, initlist=None, true_Dice=None, penalty=0, roundnum=1):
+        if initlist == None: # All of this is for mutable function parameters
+            initlist = [[0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]]
+        if true_Dice == None:
+            true_Dice = [False, False, False, False]
         super().__init__(initlist)
         self.SCORELIST = [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78]
         self.true_Dice = true_Dice
@@ -15,6 +19,7 @@ class Card(list):
         position[0]: an integer (0, 1, 2, 3) representing which list to modify
         position[1]: index of to add "1" (0,1,2...,10,11)
         """
+        #print("xplay: ", xplay)
         try:
             self[xplay.position[0]][xplay.position[1]] = 1 #TODO: debug TypeError: 'XPlay' object is not subscriptable
         except IndexError as e:
@@ -42,16 +47,20 @@ class XPlay:
         self.position = position
         self.isWild = isWild
         self.plyrWild = plyrWild
+    
+    def __repr__(self):
+        return (self.position, self.isWild, self.plyrWild).__repr__()
+
     def isPossible(self, card):
         '''
         Accepts Card object, returns boolean. True if the play is possible according to Qwixx rules
         '''
         pempty = [] # Returns all possible plays, but not last (lock) spot. This means this must be added later on.
         for i, color in enumerate(card):
-            if card.true_Dice[i] is True:
+            if card.true_Dice[i] is False:
                 last = self.findlastXs(card)[i]
                 for ind, _ in enumerate(color[last+1:11]):
-                    pempty.append((i, ind+last+1))
+                    pempty.append([i, ind+last+1])
         #print("pempty: ", pempty)
         pos = self.position
         #print("pos: ", pos)
@@ -100,3 +109,5 @@ class XPlay:
                 result = len(row)-i-1
                 final.append(result)
         return final
+
+print(XPlay([0,0], False).isPossible(Card()))

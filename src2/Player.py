@@ -98,16 +98,25 @@ class AI(Player):
         return plays, rolls #return data
 
     def turn(self, card):
+        print("TURN CALLED")
         playslist, rolls = self._getXPlays(card.true_Dice)
+
         plays = self.eval(playslist, card)
         took = self._gettookfromXPlays(plays, card)
         return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
 
     @classmethod
+    def _getpossiblefromplays(cls, plays, card):
+        '''
+        Only returns possible XPlays in plays (list of XPlays). Oh, and it's a one-liner because I'm awesome. So there.
+        '''
+        return [play for play in plays if play.isPossible(card)]
+
+    @classmethod
     def _getXPlaysfromwild(cls, wildint, plyrWild=False):
         plays = []
         for i in range(2): #for red and yellow that the two wilds added could go in
-            plays.append(XPlay([i,wildint], True, plyrWild=plyrWild)) # append wild play for every color
+            plays.append(XPlay([i,wildint-2], True, plyrWild=plyrWild)) # append wild play for every color
         for i in range(2): #for blue and green that the two wilds added could go in
             plays.append(XPlay([i,12-wildint], True, plyrWild=plyrWild)) # append wild play for every color
         return plays
@@ -130,15 +139,20 @@ class AI(Player):
 
     def eval(self, playslist, card):
         lse = LeastSkipped(playslist)
-        return lse.evalAll(card)
+        plays = lse.evalAll(card)
+        print(plays)
+        plays = self._getpossiblefromplays(plays, card)
+        print("New: ", plays)
         #print("evalall out: ", lse.evalAll(card))
     
     def wild(self, wild, card=None):
+        print("WILD CALLED")
         if card == None:
             raise Exception('No card passed to AI.wild()')
         plays = self.eval(self._getXPlaysfromwild(wild, plyrWild=True), card)
+        print("plays: ", plays)
         if plays != []:
-            print(plays[0], plays[0].position)
+            #print(plays[0], plays[0].position)
             card.addX(plays[0])  # Note the [0] bit, eval can only return one best for human wild
             took = self._gettookfromXPlays(plays, card)
         else:
