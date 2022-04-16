@@ -8,11 +8,9 @@ from src2 import Card, XPlay, Player, LeastSkipped, AI, Human
 from copy import deepcopy, copy
 gameover = False
 
-player_list = Player.initPlayers()
-
 logging.basicConfig(level=logging.DEBUG)
 
-def main():
+def main(player_list):
     while not gameover:
         print(f"\nRound {str(player_list[0].card.roundnum)}") #Using first player's roundnum, perhaps change to a class called GameState or something
         for i, player in enumerate(player_list): # Loop through all players
@@ -36,3 +34,5 @@ def main():
             player.card.roundnum += 1 #Update round counter for all players
             if isinstance(player, AI):
                 print(f"{player.tag}'s card after round: ", player.card)
+
+main(Player.initPlayers())
