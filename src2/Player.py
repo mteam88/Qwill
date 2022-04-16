@@ -168,6 +168,20 @@ class AI(Player):
         return took
         
 
+class PlayerList(list):
+    def __init__(self, list_of_Players):
+        super().__init__(list_of_Players)
+    
+    def funcall(func, *argsf, **kwargsf):
+        for player in self:
+            took = player.func(*argsf, **kwargsf)
+            if took != []: # If player took value
+                logging.debug(f"took1: {took}") # debug only
+            else:
+                logging.debug(f"took2: {took}")
+                print("Did not take that wild")
+
+
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
     '''
     dict should be {"didtake": (None for did not take, False for took penalty, True for took X(s)), "tookwhat": list of XPlays that was taken}
