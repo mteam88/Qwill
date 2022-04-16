@@ -1,3 +1,5 @@
 tasks:
-- init: sudo pip3 install -r requirements.txt
-  command: python3 main2.py
+- command: python3 main2.py
+
+image:
+  file: .gitpod.Dockerfile
