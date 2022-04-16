@@ -24,7 +24,7 @@ class Player:
     @classmethod
     def initPlayers(cls):
         '''
-        Initialize all players. Returns list of Human and AI objects (with Player superclassed).
+        Initialize all players. Returns PlayerList object of Human and AI objects (with Player superclassed).
         '''
         players = []
         while True:
@@ -36,14 +36,16 @@ class Player:
                     players.append(Human(tag, Card()))
             else: break
         print('Selected player names/tags:', [player.tag for player in players], sep='\n')
-        return players
+        return PlayerList(players)
 
 class Human(Player):
     def __init__(self, tag, card):
         super().__init__(tag)
         #self.tag = tag
-        self.card = card  # Not used      
-    def turn(self, card):
+        self.card = card
+    def turn(self, card=None):
+        if card == None:
+            card = self.card
         while True:
             response = input(f'{self.tag}, please enter your wild (2-12): ')
             try:
@@ -98,8 +100,10 @@ class AI(Player):
         plays += AI._getXPlaysfromwild(sum(rolls[0:2])) # Get all of the wild plays
         return plays, rolls #return data
 
-    def turn(self, card):
-        print("TURN CALLED")
+    def turn(self, card=None):
+        if card == None:
+            card = self.card
+        logging.warn("turn called")
         playslist, rolls = self._getXPlays(card.true_Dice)
 
         plays = self.eval(playslist, card)
@@ -154,7 +158,7 @@ class AI(Player):
     def wild(self, wild, card=None):
         print("WILD CALLED")
         if card == None:
-            raise Exception('No card passed to AI.wild()')
+            card = self.card
         plays = self.eval(self._getXPlaysfromwild(wild, plyrWild=True), card)
         print("plays: ", plays)
         if plays != []:
@@ -172,14 +176,21 @@ class PlayerList(list):
     def __init__(self, list_of_Players):
         super().__init__(list_of_Players)
     
-    def funcall(func, *argsf, **kwargsf):
-        for player in self:
-            took = player.func(*argsf, **kwargsf)
-            if took != []: # If player took value
-                logging.debug(f"took1: {took}") # debug only
+    def funcall(self, func, *argsf, active=None, **kwargsf):
+        'Calls a function string on all players. Yields output of that function in tuple after active_player Player object'
+        logging.info(f'func: {func}, *argsf: {argsf}, **kwargsf: {kwargsf}')
+        for player in [x for x in self if x != active]:
+            funcout = eval(f"player.{func}(*argsf, **kwargsf)") # Run selected function. Should probably change.
+            logging.info(f'funcout to yield: {funcout}')
+            yield player, (funcout)
+            if funcout != []:
+                logging.debug(f"funcout1: {funcout}") # debug only
             else:
-                logging.debug(f"took2: {took}")
+                logging.debug(f"funcout2: {funcout}")
                 print("Did not take that wild")
+    
+    def getAIs(self):
+        return list([x for x in self if isinstance(x, AI)])
 
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.

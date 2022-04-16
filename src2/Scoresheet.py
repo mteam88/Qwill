@@ -2,7 +2,7 @@ from copy import deepcopy, copy
 import logging
 
 class Card(list):
-    def __init__(self, initlist=None, true_Dice=None, penalty=0, roundnum=1):
+    def __init__(self, initlist=None, true_Dice=None, penalty=0, roundnum=0):
         if initlist == None: # All of this is for mutable function parameters
             initlist = [[0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]]
         if true_Dice == None:
@@ -39,9 +39,6 @@ class Card(list):
         for i in range(4):
             scr += self.SCORELIST[self[i].count(1)]
         return scr
-    
-    def getLists(self): #DELETE ME
-        return list(self)
 
 class XPlay:
     def __init__(self, position, isWild, plyrWild=False):
