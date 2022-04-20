@@ -7,9 +7,10 @@ import random, sys, logging
 from src2 import Card, XPlay, Player, LeastSkipped, AI, Human, newround
 from copy import deepcopy, copy
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
 
 def main(player_list):
+    newround(player_list,isfirstround=True)
     gameover = False
     while not gameover:
         newround(player_list)

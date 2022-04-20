@@ -1,3 +1,4 @@
+from Player import AI
 
 def handlegameover(player_list):
     '''Accepts PlayerList object'''
@@ -19,10 +20,20 @@ def isgameover(player_list):
         else: continue
 
 
-def newround(player_list):
+def newround(player_list, isfirstround=False):
     '''Increments round number for all players.'''
-    for player in player_list: 
-        player.card.roundnum += 1 #Update round counter for all players
-        if isinstance(player, AI):
-            print(f"{player.tag}'s card after round: ", player.card)
-    print(f"\nRound {str(player_list[0].card.roundnum)}") #Using first player's roundnum, perhaps change to a class called GameState or something
+    #print(f"isfirstround {isfirstround}")
+
+    def dispAICards(stringtoformat):
+        '''Helper, displays AI's cards'''
+        for player in player_list:
+            if isinstance(player, AI): #Display ai player cards.
+                print(stringtoformat.format(ptag=player.tag, pcard=player.card))
+
+    if isfirstround:
+        dispAICards("{ptag}'s card before round: {pcard}")
+    if not isfirstround:
+        dispAICards("{ptag}'s card after round: {pcard}")
+        for player in player_list: 
+            player.card.roundnum += 1 #Update round counter for all players
+        print(f"\nRound {str(player_list[0].card.roundnum)}") #Using first player's roundnum, perhaps change to a class called GameState or something

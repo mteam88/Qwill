@@ -180,7 +180,7 @@ class PlayerList(list):
         'Calls a function string on all players. Yields output of that function in tuple after active_player Player object'
         logging.info(f'func: {func}, *argsf: {argsf}, **kwargsf: {kwargsf}')
         for player in [x for x in self if x != active]:
-            funcout = eval(f"player.{func}(*argsf, **kwargsf)") # Run selected function. Should probably change.
+            funcout = getattr(player.__class__, "func")(f"player.{func}(*argsf, **kwargsf)") # Run selected function. A bit clunky.
             logging.info(f'funcout to yield: {funcout}')
             yield player, (funcout)
             if funcout != []:
