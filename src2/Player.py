@@ -2,6 +2,7 @@ from Evaluaters import *
 from random import randint
 from Scoresheet import XPlay, Card
 from warnings import warn
+from loggingdecorator import logiof
 import logging
 
 class InputError(Exception):
@@ -64,10 +65,11 @@ class AI(Player):
     '''
     Class that interprets card state and decides what to do based on Evaluaters and Card
     '''
+    #@logiof
     def __init__(self, tag, card):
         super().__init__(tag)
         #self.tag = tag
-        self.card = card # Not used
+        self.card = card
 
     def _getXPlays(self, true_Dice):
         '''
@@ -99,15 +101,14 @@ class AI(Player):
                             plays.append(XPlay([j, realrolls[i] - 2], False)) # val - 2 to get index from number
         plays += AI._getXPlaysfromwild(sum(rolls[0:2])) # Get all of the wild plays
         return plays, rolls #return data
-
+    #logiof
     def turn(self, card=None):
-        if card == None:
+        if card == None: # Essentially an optional parameter
             card = self.card
-        logging.warn("turn called")
+        logging.critical("turn called")
         playslist, rolls = self._getXPlays(card.true_Dice)
-
         plays = self.eval(playslist, card)
-        logging.info(f"Took from XPlays input: {plays}")
+        #logging.info(f"Took from XPlays input: {plays}")
         took = self._gettookfromXPlays(plays, card)
         return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
 
@@ -132,7 +133,7 @@ class AI(Player):
         '''Helper function to get Took object from list of XPlays selected by eval() method'''
         took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
         if plays != []:
-            logging.info(f"Plays: {plays}")
+            #logging.info(f"Plays: {plays}")
             for play in plays: # Add penalty taking functionality (if plays == []) !!!TypeError: 'NoneType' object is not iterable
                 took["didtake"] = True
                 took["tookwhat"].append(play)
@@ -145,16 +146,17 @@ class AI(Player):
         else:
             warn("Warning: plays is unusual.(at AI._gettookfromXPlays() classmethod)")
         return took
-
+    @logiof
     def eval(self, playslist, card):
-        logging.info(f"Old Playslist: {playslist}")
+        #logging.info(f"Old Playslist: {playslist}")
         playslist = self._getpossiblefromplays(playslist, card)
-        logging.info(f"New Playlist: {playslist}")
+        #logging.info(f"New Playlist: {playslist}")
         lse = LeastSkipped(playslist)
         plays = lse.evalAll(card)
-        logging.info(f"evalall out: {lse.evalAll(card)}")
+        #logging.info(f"evalall out: {lse.evalAll(card)}")
         return plays
     
+    #@logiof
     def wild(self, wild, card=None):
         print("WILD CALLED")
         if card == None:
@@ -180,7 +182,8 @@ class PlayerList(list):
         'Calls a function string on all players. Yields output of that function in tuple after active_player Player object'
         logging.info(f'func: {func}, *argsf: {argsf}, **kwargsf: {kwargsf}')
         for player in [x for x in self if x != active]:
-            funcout = getattr(player.__class__, "func")(f"player.{func}(*argsf, **kwargsf)") # Run selected function. A bit clunky.
+            funcout = getattr(player.__class__, func)(player, *argsf, **kwargsf) # Run selected function. A bit clunky.
+            #funcout = functocall(f"player.{func}(*argsf, **kwargsf)") # Run selected function. A bit clunky.
             logging.info(f'funcout to yield: {funcout}')
             yield player, (funcout)
             if funcout != []:
@@ -197,5 +200,11 @@ class Took(dict): # Super simple class (pun intended) to make naming and extendi
     '''
     dict should be {"didtake": (None for did not take, False for took penalty, True for took X(s)), "tookwhat": list of XPlays that was taken}
     '''
-    def __init__(self, dict):
-        super().__init__(dict)
+    def __init__(self, pdict):
+        logging.warn(f'pdict: {pdict}')
+        try:
+            pdict['didtake']
+            pdict['tookwhat']
+        except KeyError:
+            raise ValueError("Required dict fields are 'didtake' and 'tookwhat'")
+        super().__init__(pdict)

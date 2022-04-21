@@ -40,6 +40,10 @@ class Card(list):
             scr += self.SCORELIST[self[i].count(1)]
         return scr
 
+    def __str__(self):
+        pass
+
+
 class XPlay:
     def __init__(self, position, isWild, plyrWild=False):
         self.position = position

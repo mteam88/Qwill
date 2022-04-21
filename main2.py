@@ -15,7 +15,7 @@ def main(player_list):
     while not gameover:
         newround(player_list)
         for active_player, (took, wild) in player_list.funcall("turn"):
-            logging.info(f'out of turn funcall: {took, wild}')
+            print(f'out of turn funcall: {took, wild}')
             player_list.funcall("wild", wild, active=active_player) # call wild on all players
 
 main(Player.initPlayers())
