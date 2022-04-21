@@ -24,7 +24,6 @@ class Card(list):
         try:
             self[xplay.position[0]][xplay.position[1]] = 1 #TODO: debug TypeError: 'XPlay' object is not subscriptable
         except IndexError as e:
-            print('ERROR')
             if not muffled:
                 raise e
         return self
@@ -41,7 +40,24 @@ class Card(list):
         return scr
 
     def __str__(self):
-        pass
+        """
+        returns a formatted (newlined) string of the lists printed nicely.
+
+        For example: [[1,0,1,0,0,1,1,1,0,0,1,1], ...]
+        might return: "Red: [X - X - - X X X - - X X]\nYellow: ...
+        """
+        Xedrows = []
+        for row in self:
+            Xedrow = []
+            for i, e in enumerate(row):
+                if e == 1:
+                    Xedrow.append('X')
+                else:
+                    Xedrow.append('-')
+            Xedrows.append(' '.join(Xedrow))
+        formatted = '\nRed:    {}\nYellow: {}\nGreen:  {}\nBlue:   {}'\
+            .format(Xedrows[0], Xedrows[1], Xedrows[2], Xedrows[3])
+        return formatted
 
 
 class XPlay:
@@ -109,5 +125,3 @@ class XPlay:
                 result = len(row)-i-1
                 final.append(result)
         return final
-
-print(XPlay([0,0], False).isPossible(Card()))

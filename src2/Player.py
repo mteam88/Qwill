@@ -58,7 +58,7 @@ class Human(Player):
             except (InputError,ValueError):
                 print("Please input a valid integer wild between 2 and 12")
     def wild(self, wild, card=None):
-        pass
+        return Took({"didtake": False, "tookwhat": []})
 
 
 class AI(Player):
@@ -101,11 +101,10 @@ class AI(Player):
                             plays.append(XPlay([j, realrolls[i] - 2], False)) # val - 2 to get index from number
         plays += AI._getXPlaysfromwild(sum(rolls[0:2])) # Get all of the wild plays
         return plays, rolls #return data
-    #logiof
+    @logiof
     def turn(self, card=None):
         if card == None: # Essentially an optional parameter
             card = self.card
-        logging.critical("turn called")
         playslist, rolls = self._getXPlays(card.true_Dice)
         plays = self.eval(playslist, card)
         #logging.info(f"Took from XPlays input: {plays}")
@@ -131,7 +130,7 @@ class AI(Player):
     @classmethod
     def _gettookfromXPlays(cls, plays, card):
         '''Helper function to get Took object from list of XPlays selected by eval() method'''
-        took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take penalty
+        took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take nothing
         if plays != []:
             #logging.info(f"Plays: {plays}")
             for play in plays: # Add penalty taking functionality (if plays == []) !!!TypeError: 'NoneType' object is not iterable
@@ -156,13 +155,12 @@ class AI(Player):
         #logging.info(f"evalall out: {lse.evalAll(card)}")
         return plays
     
-    #@logiof
+    @logiof
     def wild(self, wild, card=None):
-        print("WILD CALLED")
         if card == None:
             card = self.card
         plays = self.eval(self._getXPlaysfromwild(wild, plyrWild=True), card)
-        print("plays: ", plays)
+        #print("plays: ", plays)
         if plays != []:
             #print(plays[0], plays[0].position)
             card.addX(plays[0])  # Note the [0] bit, eval can only return one best for human wild
@@ -170,7 +168,7 @@ class AI(Player):
                 card.addX(XPlay([plays[0].position[0], 11], True))
             took = self._gettookfromXPlays(plays, card)
         else:
-            took = Took({"didtake": None, "tookwhat": []})
+            took = Took({"didtake": False, "tookwhat": []})
         return took
         
 
@@ -186,11 +184,6 @@ class PlayerList(list):
             #funcout = functocall(f"player.{func}(*argsf, **kwargsf)") # Run selected function. A bit clunky.
             logging.info(f'funcout to yield: {funcout}')
             yield player, (funcout)
-            if funcout != []:
-                logging.debug(f"funcout1: {funcout}") # debug only
-            else:
-                logging.debug(f"funcout2: {funcout}")
-                print("Did not take that wild")
     
     def getAIs(self):
         return list([x for x in self if isinstance(x, AI)])
@@ -198,7 +191,7 @@ class PlayerList(list):
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
     '''
-    dict should be {"didtake": (None for did not take, False for took penalty, True for took X(s)), "tookwhat": list of XPlays that was taken}
+    dict should be {"didtake": (False for did not take, True for took X(s)), "tookwhat": list of XPlays that was taken}
     '''
     def __init__(self, pdict):
         logging.warn(f'pdict: {pdict}')

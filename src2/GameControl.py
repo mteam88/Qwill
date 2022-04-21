@@ -1,4 +1,5 @@
 from Player import AI
+import logging
 
 def handlegameover(player_list):
     '''Accepts PlayerList object'''
@@ -28,6 +29,7 @@ def newround(player_list, isfirstround=False):
         '''Helper, displays AI's cards'''
         for player in player_list:
             if isinstance(player, AI): #Display ai player cards.
+                #logging.warn(f"{AI, player.card}")
                 print(stringtoformat.format(ptag=player.tag, pcard=player.card))
 
     if isfirstround:

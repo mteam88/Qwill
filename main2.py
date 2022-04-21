@@ -15,7 +15,11 @@ def main(player_list):
     while not gameover:
         newround(player_list)
         for active_player, (took, wild) in player_list.funcall("turn"):
-            print(f'out of turn funcall: {took, wild}')
-            player_list.funcall("wild", wild, active=active_player) # call wild on all players
+
+            for player, wildoutput in player_list.funcall("wild", wild, active=active_player):
+                (didtake, tookwhat) = wildoutput.values() # Get specific values (dict unpacking)
+
+                if didtake: # Print message saying that a player took a wild.
+                    print(f'"{player.tag}" took the wild "{wild}" from "{active_player.tag}"')
 
 main(Player.initPlayers())
