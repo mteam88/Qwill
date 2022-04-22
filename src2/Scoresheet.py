@@ -21,11 +21,9 @@ class Card(list):
         position[1]: index of to add "1" (0,1,2...,10,11)
         """
         #print("xplay: ", xplay)
-        try:
-            self[xplay.position[0]][xplay.position[1]] = 1 #TODO: debug TypeError: 'XPlay' object is not subscriptable
-        except IndexError as e:
-            if not muffled:
-                raise e
+        self[xplay.position[0]][xplay.position[1]] = 1
+        if xplay.position[1] == 10:
+            self._addlockingX(xplay)
         return self
 
     def scoreCard(self):
@@ -38,6 +36,9 @@ class Card(list):
         for i in range(4):
             scr += self.SCORELIST[self[i].count(1)]
         return scr
+
+    def _addlockingX(self, play):
+        self.addX(XPlay([play.position[0], 11], False))
 
     def __str__(self):
         """
@@ -125,3 +126,8 @@ class XPlay:
                 result = len(row)-i-1
                 final.append(result)
         return final
+
+class PlaysList(list):
+    def __init__(self, plist, iswild=False):
+        self.iswild = iswild
+        super().__init__(plist)
