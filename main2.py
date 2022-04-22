@@ -4,10 +4,10 @@
 
 #Import
 import random, sys, logging
-from src2 import Card, XPlay, Player, LeastSkipped, AI, Human, newround
+from src2 import Card, XPlay, Player, LeastSkipped, AI, Human, newround, isgameover
 from copy import deepcopy, copy
 
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.WARNING)
 
 def main(player_list):
     newround(player_list,isfirstround=True)
@@ -15,8 +15,10 @@ def main(player_list):
     while not gameover:
         newround(player_list)
         for active_player, (took, wild) in player_list.funcall("turn"):
+
+            isgameover(player_list)
             if took.ispenalty: # Set in turn, true if AI took penalty
-                print(f'"{active_player.tag}" took a penalty. They now have {active_player.card.penalty/5}s.')
+                print(f'"{active_player.tag}" took a penalty. They now have {active_player.card.penalty} penalties.')
 
 
             for player, wildoutput in player_list.funcall("wild", wild, active=active_player):

@@ -116,6 +116,7 @@ class AI(Player):
             took = self._gettookfromXPlays(plays, card)
             return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
         except Penalty: # Took penalty
+            self.card.penalty += 1
             took = Took({'didtake': False, 'tookwhat': []})
             took.ispenalty = True
             return [took, sum(rolls[0:2])]
@@ -133,7 +134,7 @@ class AI(Player):
         plays = []
         for i in range(2): #for red and yellow that the two wilds added could go in
             plays.append(XPlay([i,wildint-2], True, plyrWild=plyrWild)) # append wild play for every color
-        for i in range(2): #for blue and green that the two wilds added could go in
+        for i in range(2,4): #for blue and green that the two wilds added could go in
             plays.append(XPlay([i,12-wildint], True, plyrWild=plyrWild)) # append wild play for every color
         return plays
 
@@ -181,6 +182,9 @@ class AI(Player):
             card.addX(XPlay([plays[0].position[0], 11], True))
         took = self._gettookfromXPlays(plays, card)
         return took
+    
+    def __repr__(self):
+        return f"AI OBJECT: {self.tag}"
         
 
 class PlayerList(list):
@@ -203,10 +207,8 @@ class PlayerList(list):
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
     '''
     dict should be {"didtake": (False for did not take, True for took X(s)), "tookwhat": list of XPlays that was taken}
-
     '''
     def __init__(self, pdict):
-        logging.warn(f'pdict: {pdict}')
         try:
             pdict['didtake']
             pdict['tookwhat']

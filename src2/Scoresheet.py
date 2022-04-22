@@ -67,8 +67,8 @@ class XPlay:
         self.isWild = isWild
         self.plyrWild = plyrWild
     
-    def disp(self):
-        return (self.position, self.isWild, self.plyrWild).__repr__()
+    def __repr__(self):
+        return (f"XPlay: {self.position, self.isWild, self.plyrWild}")
 
     def isPossible(self, card):
         '''

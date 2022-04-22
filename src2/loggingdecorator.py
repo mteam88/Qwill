@@ -7,7 +7,7 @@ def logiof(func):
 
     @wraps(func) # functools to assist with transition
     def wrapper(*args, **kwargs):
-        logging.debug(f'{func.__name__}(args, kwargs)')
+        logging.debug(f'{func.__name__}({args}, {kwargs})')
         result = func(*args, **kwargs)
         logging.debug(f'{func.__name__} returns {result}')
         return result
