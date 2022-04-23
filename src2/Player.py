@@ -202,6 +202,13 @@ class PlayerList(list):
     
     def getAIs(self):
         return list([x for x in self if isinstance(x, AI)])
+    
+    def _countTD(self, player):
+        return player.true_Dice.count()
+    
+    def updateTDice(self):
+        players = self[:] # Shallow copy
+        players.sort()
 
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.

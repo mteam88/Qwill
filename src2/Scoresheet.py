@@ -38,6 +38,7 @@ class Card(list):
         return scr
 
     def _addlockingX(self, play):
+        self.true_Dice[play.position[0]] = True
         self.addX(XPlay([play.position[0], 11], False))
 
     def __str__(self):

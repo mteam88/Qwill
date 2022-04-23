@@ -16,13 +16,15 @@ def main(player_list):
         newround(player_list)
         for active_player, (took, wild) in player_list.funcall("turn"):
 
-            isgameover(player_list)
+            gameover = isgameover(player_list)
             if took.ispenalty: # Set in turn, true if AI took penalty
                 print(f'"{active_player.tag}" took a penalty. They now have {active_player.card.penalty} penalties.')
+                gameover = isgameover(player_list)
 
 
             for player, wildoutput in player_list.funcall("wild", wild, active=active_player):
                 (didtake, tookwhat) = wildoutput.values() # Get specific values (dict unpacking)
+                gameover = isgameover(player_list)
 
                 if didtake: # Print message saying that a player took a wild.
                     print(f'"{player.tag}" took the wild "{wild}" from "{active_player.tag}"')
