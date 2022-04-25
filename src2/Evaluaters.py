@@ -35,8 +35,8 @@ class LeastSkipped(Evaluater):
         
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
 
-        if scoringlist:
-            bestXPlayinfo = scoringlist[0]
+        if not scoringlist == []: 
+            bestXPlayinfo = scoringlist[0] # Set bestxplayinfo
         else: # No plays, must take penalty if turn
             if self.iswild == False:
                 raise Penalty
