@@ -38,6 +38,9 @@ class Player:
             else: break
         print('Selected player names/tags:', [player.tag for player in players], sep='\n')
         return PlayerList(players)
+    
+    def __repr__(self):
+        return f"{self.__class__} OBJECT: {self.tag}"
 
 class Human(Player):
     def __init__(self, tag, card):
@@ -182,9 +185,6 @@ class AI(Player):
             card.addX(XPlay([plays[0].position[0], 11], True))
         took = self._gettookfromXPlays(plays, card)
         return took
-    
-    def __repr__(self):
-        return f"AI OBJECT: {self.tag}"
         
 
 class PlayerList(list):
@@ -202,13 +202,15 @@ class PlayerList(list):
     
     def getAIs(self):
         return list([x for x in self if isinstance(x, AI)])
-    
-    def _countTD(self, player):
+
+    @staticmethod
+    def _countTD(player):
+        "Sort key for updateTDice func below"
         return player.true_Dice.count()
     
     def updateTDice(self):
         players = self[:] # Shallow copy
-        players.sort()
+        players.sort(key=self._countTD)
 
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
