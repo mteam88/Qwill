@@ -1,5 +1,6 @@
 from Player import AI
 import logging
+from loggingdecorator import logiof
 
 def handlegameover(player_list):
     '''Accepts PlayerList object'''
@@ -21,14 +22,14 @@ def isgameover(player_list):
         else: continue
 
 
+@logiof
 def newround(player_list, isfirstround=False):
     '''Increments round number for all players.'''
-    #print(f"isfirstround {isfirstround}")
 
     def dispAICards(stringtoformat):
         '''Helper, displays AI's cards'''
         for player in player_list:
-            if isinstance(player, AI): #Display ai player cards.
+            if isinstance(player, AI): #Display only ai player cards.
                 #logging.warn(f"{AI, player.card}")
                 print(stringtoformat.format(ptag=player.tag, pcard=player.card))
 

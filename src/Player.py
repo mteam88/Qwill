@@ -206,15 +206,18 @@ class PlayerList(list):
     
     def getAIs(self):
         return list([x for x in self if isinstance(x, AI)])
-
-    @staticmethod
-    def _countTD(player):
-        "Sort key for updateTDice func below"
-        return player.true_Dice.count()
     
     def updateTDice(self):
         players = self[:] # Shallow copy
         players.sort(key=self._countTD)
+        trueTD = players[0].true_Dice
+        for player in self:
+            player.true_Dice = trueTD
+    
+    @staticmethod
+    def _countTD(player):
+        "Sort key for updateTDice func below"
+        return player.true_Dice.count()
 
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
