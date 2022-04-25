@@ -31,4 +31,5 @@ def main(player_list):
 
 #main(Player.initPlayers())
 from Player import PlayerList, AI, Human
-main(PlayerList([AI('cpu_quill', Card()), Human('me', Card())]))
+plist = PlayerList([AI('cpu_quill', Card()), Human('me', Card())])
+main(plist)
