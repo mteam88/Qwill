@@ -18,7 +18,7 @@ def test_ai_wild():
     assert a.card == testcard2
     out = a.wild(2, card=a.card)
     assert isinstance(out, Took)
-    assert out["didtake"] == None
+    assert out["didtake"] == False
     testcard3 = Card()
     testcard3.addX(XPlay([0,0], False))
     testcard3.addX(XPlay([1,0], False))
