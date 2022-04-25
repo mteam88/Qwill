@@ -68,11 +68,12 @@ class AI(Player):
     '''
     Class that interprets card state and decides what to do based on Evaluaters and Card
     '''
-    #@logiof
     def __init__(self, tag, card):
         super().__init__(tag)
         #self.tag = tag
         self.card = card
+
+    # Class Interface Methods
 
     @logiof
     def turn(self, card=None):
@@ -83,7 +84,7 @@ class AI(Player):
             card = self.card
         playslist, rolls = self._getXPlays(card.true_Dice)
         try:
-            plays = self.eval(playslist, card, iswild=False)
+            plays = self._eval(playslist, card, iswild=False)
             #logging.info(f"Took from XPlays input: {plays}")
             took = self._gettookfromXPlays(plays, card)
             return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
@@ -94,30 +95,32 @@ class AI(Player):
             return [took, sum(rolls[0:2])]
 
     @logiof
-    def eval(self, playslist, card, iswild=False):
+    def _eval(self, playslist, card, iswild=False):
         #logging.info(f"Old Playslist: {playslist}")
         playslist = self._getpossiblefromplays(playslist, card)
         #logging.info(f"New Playlist: {playslist}")
         lse = LeastSkipped(playslist, iswild=iswild)
         plays = lse.evalAll(card)
-        #logging.info(f"evalall out: {lse.evalAll(card)}")
+        #logging.info(f"_evalall out: {lse.evalAll(card)}")
         return plays
     
     @logiof
     def wild(self, wild, card=None):
         if card == None:
             card = self.card
-        plays = self.eval(self._getXPlaysfromwild(wild), card, iswild=True)
+        plays = self._eval(self._getXPlaysfromwild(wild), card, iswild=True)
         #print("plays: ", plays)
         if plays == []:
             took = Took({"didtake": False, "tookwhat": []})
             return took
         #print(plays[0], plays[0].position)
-        card.addX(plays[0])  # Note the [0] bit, eval can only return one best for human wild
+        card.addX(plays[0])  # Note the [0] bit, _eval can only return one best for human wild
         if plays[0].position[1] == 10:
             card.addX(XPlay([plays[0].position[0], 11], True))
         took = self._gettookfromXPlays(plays, card)
         return took
+
+    # Internal Helper Methods
 
     def _getXPlays(self, true_Dice):
         '''
@@ -169,7 +172,7 @@ class AI(Player):
 
     @classmethod
     def _gettookfromXPlays(cls, plays, card):
-        '''Helper function to get Took object from list of XPlays selected by eval() method'''
+        '''Helper function to get Took object from list of XPlays selected by _eval() method'''
         took = Took({"didtake": False, "tookwhat": []}) # Defaults to did take nothing
         if plays != []:
             took["didtake"] = True
