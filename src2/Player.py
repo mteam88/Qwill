@@ -93,16 +93,6 @@ class AI(Player):
             took = Took({'didtake': False, 'tookwhat': []})
             took.ispenalty = True
             return [took, sum(rolls[0:2])]
-
-    @logiof
-    def _eval(self, playslist, card, iswild=False):
-        #logging.info(f"Old Playslist: {playslist}")
-        playslist = self._getpossiblefromplays(playslist, card)
-        #logging.info(f"New Playlist: {playslist}")
-        lse = LeastSkipped(playslist, iswild=iswild)
-        plays = lse.evalAll(card)
-        #logging.info(f"_evalall out: {lse.evalAll(card)}")
-        return plays
     
     @logiof
     def wild(self, wild, card=None):
@@ -121,6 +111,16 @@ class AI(Player):
         return took
 
     # Internal Helper Methods
+    
+    @logiof
+    def _eval(self, playslist, card, iswild=False):
+        #logging.info(f"Old Playslist: {playslist}")
+        playslist = self._getpossiblefromplays(playslist, card)
+        #logging.info(f"New Playlist: {playslist}")
+        lse = LeastSkipped(playslist, iswild=iswild)
+        plays = lse.evalAll(card)
+        #logging.info(f"_evalall out: {lse.evalAll(card)}")
+        return plays
 
     def _getXPlays(self, true_Dice):
         '''
