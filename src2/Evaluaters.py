@@ -1,4 +1,5 @@
 import logging
+from Scoresheet import XPlay
 
 class Penalty(Exception):
     pass
@@ -22,11 +23,11 @@ class LeastSkipped(Evaluater):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def evalAll(self, card):
+    def evalAll(self, card) -> XPlay:
 
         # Check if any are blocking plays and always take one if there is.
         if (lockingplay := self._checkalllocking(self.xPlays)): # Hooray walrus operator!
-            return lockingplay
+            return [lockingplay]
 
         scoringlist = []
         for xPlay in self.xPlays: # Looping for every play added.

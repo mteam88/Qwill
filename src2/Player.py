@@ -76,7 +76,7 @@ class AI(Player):
     # Class Interface Methods
 
     @logiof
-    def turn(self, card=None):
+    def turn(self, card: Card =None):
         '''
         Returns [Took object, wild]
         '''
@@ -111,7 +111,7 @@ class AI(Player):
         return took
 
     # Internal Helper Methods
-    
+
     @logiof
     def _eval(self, playslist, card, iswild=False):
         #logging.info(f"Old Playslist: {playslist}")
