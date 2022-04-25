@@ -217,7 +217,7 @@ class PlayerList(list):
     @staticmethod
     def _countTD(player):
         "Sort key for updateTDice func below"
-        return player.true_Dice.count()
+        return player.true_Dice.count(True)
 
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
