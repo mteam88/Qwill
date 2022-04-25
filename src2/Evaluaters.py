@@ -23,9 +23,15 @@ class LeastSkipped(Evaluater):
         super().__init__(*args, **kwargs)
 
     def evalAll(self, card):
+
+        # Check if any are blocking plays and always take one if there is.
+        if (lockingplay := self._checkalllocking(self.xPlays)): # Hooray walrus operator!
+            return lockingplay
+
         scoringlist = []
         for xPlay in self.xPlays: # Looping for every play added.
             scoringlist.append([xPlay, xPlay.getScoring(card)]) # Initialize list
+        
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
 
         if scoringlist:
@@ -34,9 +40,6 @@ class LeastSkipped(Evaluater):
             if self.iswild == False:
                 raise Penalty
             return []
-        
-        if bestXPlayinfo[0].position[1] == 10:
-            return [bestXPlayinfo[0]]
 
         if bestXPlayinfo[0].plyrWild == True: #This means that we might not have to take the XPlay
             if bestXPlayinfo[1][0] <= 2: #Only take if skips 1 or none
@@ -46,3 +49,18 @@ class LeastSkipped(Evaluater):
                 return [] #Empty because should be taken.
 
         return [bestXPlayinfo[0]] # TODO extend so takes wild then color play on turn if possible
+
+
+    # Internal Helper Methods
+    @staticmethod
+    def _checklocking(play) -> bool:
+        "Returns True if locking play."
+        if play.position[1] == 10: return True
+        else: return False # Redundant
+    
+    @classmethod # So can call _checklocking here
+    def _checkalllocking(cls, playslist):
+        "Returns a locking play if there is one in playslist."
+        for play in playslist:
+            if cls._checklocking(play):
+                return play
