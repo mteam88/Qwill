@@ -9,8 +9,10 @@ class InputError(Exception):
     pass
 
 class Player:
-    def __init__(self, tag):
+    def __init__(self, tag:str, card: Card, true_Dice:list=None):
         self.tag = tag
+        self.card = card
+        self.card.true_Dice = true_Dice
     def getWild(self):
         '''Get wild from player. Returns number that was rolled, not XPlay or index. Should be overwritten.'''
         pass
@@ -40,16 +42,21 @@ class Player:
         return PlayerList(players)
     
     def __repr__(self):
-        return f"{self.__class__} OBJECT: {self.tag}"
+        return f"{self.__class__.__name__} OBJECT: {self.tag}"
 
 class Human(Player):
     def __init__(self, tag, card):
-        super().__init__(tag)
+        super().__init__(tag, card)
         #self.tag = tag
-        self.card = card
     def turn(self, card=None):
         if card == None:
             card = self.card
+        return self._getwild()
+
+    def wild(self, wild, card=None):
+        return Took({"didtake": False, "tookwhat": []})
+    
+    def _getwild(self):
         while True:
             response = input(f'{self.tag}, please enter your wild (2-12): ')
             try:
@@ -60,8 +67,6 @@ class Human(Player):
                     raise InputError
             except (InputError,ValueError):
                 print("Please input a valid integer wild between 2 and 12")
-    def wild(self, wild, card=None):
-        return Took({"didtake": False, "tookwhat": []})
 
 
 class AI(Player):
@@ -69,9 +74,8 @@ class AI(Player):
     Class that interprets card state and decides what to do based on Evaluaters and Card
     '''
     def __init__(self, tag, card):
-        super().__init__(tag)
+        super().__init__(tag, card)
         #self.tag = tag
-        self.card = card
 
     # Class Interface Methods
 
@@ -192,8 +196,11 @@ class AI(Player):
         
 
 class PlayerList(list):
-    def __init__(self, list_of_Players):
-        super().__init__(list_of_Players)
+    def __init__(self, players: list):
+        self.true_Dice = [False, False, False, False]
+        for player in players: 
+            player.card.true_Dice = self.true_Dice
+        super().__init__(players)
     
     def funcall(self, func, *argsf, active=None, **kwargsf):
         'Calls a function string on all players. Yields output of that function in tuple after active_player Player object'
@@ -206,18 +213,6 @@ class PlayerList(list):
     
     def getAIs(self):
         return list([x for x in self if isinstance(x, AI)])
-    
-    def updateTDice(self):
-        players = self[:] # Shallow copy
-        players.sort(key=self._countTD)
-        trueTD = players[0].true_Dice
-        for player in self:
-            player.true_Dice = trueTD
-    
-    @staticmethod
-    def _countTD(player):
-        "Sort key for updateTDice func below"
-        return player.true_Dice.count(True)
 
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
