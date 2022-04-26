@@ -4,6 +4,7 @@
 
 #Import
 import random, sys, logging
+random.seed(200)
 from src import Card, XPlay, Player, LeastSkipped, AI, Human, newround, isgameover, PlayerList
 from copy import deepcopy, copy
 
