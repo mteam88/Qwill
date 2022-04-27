@@ -1,3 +1,4 @@
+import itertools
 from Evaluaters import *
 from random import randint
 from Scoresheet import XPlay, Card, PlaysList
@@ -32,12 +33,12 @@ class Player:
         players = []
         while True:
             tag = input('\nPlayer name/tag (blank entry aborts) (prefix with "cpu_" to create a cpu): ')
-            if tag != '':
-                if tag.split('_')[0] == 'cpu':
-                    players.append(AI(tag, Card()))
-                else:
-                    players.append(Human(tag, Card()))
-            else: break
+            if tag == '':
+                break
+            if tag.split('_')[0] == 'cpu':
+                players.append(AI(tag, Card()))
+            else:
+                players.append(Human(tag, Card()))
         print('Selected player names/tags:', [player.tag for player in players], sep='\n')
         return PlayerList(players)
     
@@ -49,7 +50,7 @@ class Human(Player):
         super().__init__(tag, card)
         #self.tag = tag
     def turn(self, card=None):
-        if card == None:
+        if card is None:
             card = self.card
         return self._getwild()
 
@@ -84,23 +85,23 @@ class AI(Player):
         '''
         Returns [Took object, wild]
         '''
-        if card == None: # Essentially an optional parameter
+        if card is None: # Essentially an optional parameter
             card = self.card
         playslist, rolls = self._getXPlays(card.true_Dice)
         try:
             plays = self._eval(playslist, card, iswild=False)
             #logging.info(f"Took from XPlays input: {plays}")
             took = self._gettookfromXPlays(plays, card)
-            return [took, sum(rolls[0:2])] # latter is wild returned from _getXPlays() function 
+            return [took, sum(rolls[:2])] # latter is wild returned from _getXPlays() function 
         except Penalty: # Took penalty
             self.card.penalty += 1
             took = Took({'didtake': False, 'tookwhat': []})
             took.ispenalty = True
-            return [took, sum(rolls[0:2])]
+            return [took, sum(rolls[:2])]
     
     @logiof
     def wild(self, wild, card=None):
-        if card == None:
+        if card is None:
             card = self.card
         plays = self._eval(self._getXPlaysfromwild(wild), card, iswild=True)
         #print("plays: ", plays)
@@ -122,18 +123,21 @@ class AI(Player):
         playslist = self._getpossiblefromplays(playslist, card)
         #logging.info(f"New Playlist: {playslist}")
         lse = LeastSkipped(playslist, iswild=iswild)
-        plays = lse.evalAll(card)
         #logging.info(f"_evalall out: {lse.evalAll(card)}")
-        return plays
+        return lse.evalAll(card)
+
+    def _getXPlaysfromrolls(self, plays, j, realrolls, i):
+        return plays.extend(XPlay([j, self._getindexfromroll(j, realrolls[i])], False) for i, _ in enumerate(realrolls))
+
+    def _getindexfromroll(self, color: int, rollnum: int):
+        return 12 - rollnum if color >= 2 else rollnum - 2
 
     def _getXPlays(self, true_Dice):
         '''
         returns list that contains XPlay objects for 'False' dice, but 'False' for 'True' dice also returns rolls
         Rolls dice by self
         '''
-        rolls = []
-        for i in range(2):
-            rolls.append(randint(1,6))
+        rolls = [randint(1,6) for _ in range(2)]
         for i in true_Dice:
             if not i:
                 rolls.append(randint(1,6))
@@ -142,19 +146,12 @@ class AI(Player):
         #print("rolls: ", rolls)
         #Now turn rolls into XPlay 
         plays = []
-        for i in range(2): #for both wilds added to colors
-            for j in range(4): #for all color dice
-                clroll = rolls[j+2] #color value currently being processed
-                if clroll is not False: #Is color actually rolled (may be locked)
-                    realrolls = [rolls[0] + clroll, rolls[1] + clroll] #Get actual numbers on scorecard
-                    if j >= 2: #Is number is blue or green
-                        for i, _ in enumerate(realrolls): #for both numbers in realrolls (added each wild to color)
-                            toapp = XPlay([j, 12 - realrolls[i]], False) #12 - val to get index from number
-                            plays.append(toapp) #append to list
-                    else: #Means number is yellow or red
-                        for i, _ in enumerate(realrolls): #for both numbers in realrolls (added each wild to color)
-                            plays.append(XPlay([j, realrolls[i] - 2], False)) # val - 2 to get index from number
-        plays += AI._getXPlaysfromwild(sum(rolls[0:2])) # Get all of the wild plays
+        for i, j in itertools.product(range(2), range(4)):
+            clroll = rolls[j+2] #color value currently being processed
+            if clroll is not False: #Is color actually rolled (may be locked)
+                realrolls = [rolls[0] + clroll, rolls[1] + clroll] #Get actual numbers on scorecard
+                self._getXPlaysfromrolls(plays, j, realrolls, i)
+        plays += AI._getXPlaysfromwild(sum(rolls[:2]))
         return plays, rolls #return data
 
     @classmethod
@@ -167,11 +164,9 @@ class AI(Player):
 
     @classmethod
     def _getXPlaysfromwild(cls, wildint, plyrWild=False):
-        plays = []
-        for i in range(2): #for red and yellow that the two wilds added could go in
-            plays.append(XPlay([i,wildint-2], True, plyrWild=plyrWild)) # append wild play for every color
-        for i in range(2,4): #for blue and green that the two wilds added could go in
-            plays.append(XPlay([i,12-wildint], True, plyrWild=plyrWild)) # append wild play for every color
+        plays = [XPlay([i,wildint-2], True, plyrWild=plyrWild) for i in range(2)] # red and yellow
+        plays.extend(XPlay([i, 12 - wildint], True, plyrWild=plyrWild) for i in range(2, 4)) # for blue and green that the two wilds added could go in
+
         return plays
 
     @classmethod
@@ -186,12 +181,10 @@ class AI(Player):
                     card.addX(XPlay([play.position[0], 11], False))
                 card.addX(play)
 
-        elif plays == []:
+        else:
             took["didtake"] = False
             took["tookwhat"] = []
 
-        else:
-            warn("Warning: plays is unusual.(at AI._gettookfromXPlays() classmethod)")
         return took
         
 
@@ -212,7 +205,7 @@ class PlayerList(list):
             yield player, (funcout)
     
     def getAIs(self):
-        return list([x for x in self if isinstance(x, AI)])
+        return [x for x in self if isinstance(x, AI)]
 
 
 class Took(dict): # Super simple class (pun intended) to make naming and extending easier.
@@ -223,7 +216,7 @@ class Took(dict): # Super simple class (pun intended) to make naming and extendi
         try:
             pdict['didtake']
             pdict['tookwhat']
-        except KeyError:
-            raise ValueError("Required dict fields are 'didtake' and 'tookwhat'")
+        except KeyError as e:
+            raise ValueError("Required dict fields are 'didtake' and 'tookwhat'") from e
         self.ispenalty = False # Set to true if penalty was taken
         super().__init__(pdict)

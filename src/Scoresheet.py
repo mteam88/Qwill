@@ -3,9 +3,9 @@ import logging
 
 class Card(list):
     def __init__(self, initlist=None, true_Dice=None, penalty=0, roundnum=0):
-        if initlist == None: # All of this is for mutable function parameters
+        if initlist is None: # All of this is for mutable function parameters
             initlist = [[0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0]]
-        if true_Dice == None:
+        if true_Dice is None:
             true_Dice = [False, False, False, False]
         super().__init__(initlist)
         self.SCORELIST = [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78]
@@ -51,15 +51,13 @@ class Card(list):
         Xedrows = []
         for row in self:
             Xedrow = []
-            for i, e in enumerate(row):
+            for e in row:
                 if e == 1:
                     Xedrow.append('X')
                 else:
                     Xedrow.append('-')
             Xedrows.append(' '.join(Xedrow))
-        formatted = '\nRed:    {}\nYellow: {}\nGreen:  {}\nBlue:   {}'\
-            .format(Xedrows[0], Xedrows[1], Xedrows[2], Xedrows[3])
-        return formatted
+        return '\nRed:    {}\nYellow: {}\nGreen:  {}\nBlue:   {}'.format(Xedrows[0], Xedrows[1], Xedrows[2], Xedrows[3])
 
 
 class XPlay:
@@ -79,19 +77,15 @@ class XPlay:
         for i, color in enumerate(card):
             if card.true_Dice[i] is False:
                 last = self.findlastXs(card)[i]
-                for ind, _ in enumerate(color[last+1:11]):
-                    pempty.append([i, ind+last+1])
+                pempty.extend([i, ind+last+1] for ind, _ in enumerate(color[last+1:11]))
         #print("pempty: ", pempty)
         pos = self.position
-        #print("pos: ", pos)
-        if pos in pempty:
-            if pos[1] == 10:
-                if card[pos[0]].count(1) >= 5:
-                    return True
-            else:
-                return True
-        else:
+        if pos not in pempty:
             return False
+        if pos[1] != 10:
+            return True
+        if card[pos[0]].count(1) >= 5:
+            return True
 
     def getScoring(self, card):
         '''
@@ -120,12 +114,8 @@ class XPlay:
             for i, e in enumerate(row[::-1]):
                 if e == 1:
                     break
-            if 1 not in row:
-                result = -1
-                final.append(result)
-            else:
-                result = len(row)-i-1
-                final.append(result)
+            result = -1 if 1 not in row else len(row)-i-1
+            final.append(result)
         return final
 
 class PlaysList(list):
