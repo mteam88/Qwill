@@ -48,7 +48,6 @@ class LeastSkipped(Evaluater):
         if bestXPlayinfo[0].plyrWild == True: #This means that we might not have to take the XPlay
             return [bestXPlayinfo[0]] if bestXPlayinfo[1][0] <= self.threshold else []
 
-
         return [bestXPlayinfo[0]] # TODO extend so takes wild then color play on turn if possible
 
 
