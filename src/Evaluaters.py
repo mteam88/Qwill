@@ -1,5 +1,8 @@
 import logging
 from Scoresheet import XPlay
+from typing import List
+
+THRESHOLD = 2
 
 class Penalty(Exception):
     pass
@@ -20,32 +23,39 @@ class Evaluater: #Super Class
         raise NotImplementedError
 
 class LeastSkipped(Evaluater):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, threshold=THRESHOLD, **kwargs):
+        self.threshold = threshold
         super().__init__(*args, **kwargs)
 
-    def evalAll(self, card) -> XPlay:
+    def evalAll(self, card) -> List[XPlay]:
 
         # Check if any are blocking plays and always take one if there is.
         if (lockingplay := self._checkalllocking(self.xPlays)): # Hooray walrus operator!
             return [lockingplay]
 
-        scoringlist = [[xPlay, xPlay.getScoring(card)] for xPlay in self.xPlays]
+        scoringlist = self._generatescoringlist(card)
+        
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
 
         if scoringlist: 
             bestXPlayinfo = scoringlist[0] # Set bestxplayinfo
+
         elif self.iswild == False:
             raise Penalty
         else:
             return []
 
         if bestXPlayinfo[0].plyrWild == True: #This means that we might not have to take the XPlay
-            return [bestXPlayinfo[0]] if bestXPlayinfo[1][0] <= 2 else []
+            return [bestXPlayinfo[0]] if bestXPlayinfo[1][0] <= self.threshold else []
+
 
         return [bestXPlayinfo[0]] # TODO extend so takes wild then color play on turn if possible
 
 
     # Internal Helper Methods
+    def _generatescoringlist(self, card):
+        return [[xplay, xplay.getScoring(card)] for xplay in self.xPlays]
+
     @staticmethod
     def _checklocking(play) -> bool:
         "Returns True if locking play."
