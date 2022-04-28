@@ -122,3 +122,18 @@ class PlaysList(list):
     def __init__(self, plist, iswild=False):
         self.iswild = iswild
         super().__init__(plist)
+
+class XMove():
+    def __init__(self, xplays):
+        self.xplays = xplays
+    def isPossible(self, card: Card) -> bool:
+        newcard = deepcopy(card)
+        for xplay in self.xplays:
+            if xplay.isPossible(newcard): 
+                newcard.addX(xplay) 
+            else: 
+                return False
+        return True
+
+    def __repr__(self):
+        return (f"XMove: ({[ele.__repr__() for ele in self.xplays]})")

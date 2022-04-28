@@ -1,5 +1,5 @@
 import logging
-from Scoresheet import XPlay
+from Scoresheet import XPlay, XMove
 from typing import List
 
 THRESHOLD = 2
@@ -27,8 +27,8 @@ class LeastSkipped(Evaluater):
         self.threshold = threshold
         super().__init__(*args, **kwargs)
 
-    def evalAll(self, card) -> List[XPlay]:
-
+    def evalAll(self, card) -> List[XMove]:
+        logging.critical(self.xPlays)
         # Check if any are blocking plays and always take one if there is.
         if (lockingplay := self._checkalllocking(self.xPlays)): # Hooray walrus operator!
             return [lockingplay]
@@ -37,9 +37,10 @@ class LeastSkipped(Evaluater):
         
         scoringlist.sort(key=lambda x: x[1][0]) # Sort by number of spaces skipped.
 
+        
+        
         if scoringlist: 
             bestXPlayinfo = scoringlist[0] # Set bestxplayinfo
-
         elif self.iswild == False:
             raise Penalty
         else:
