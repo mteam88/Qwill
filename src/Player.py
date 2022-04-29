@@ -104,7 +104,8 @@ class AI(Player):
     def wild(self, wild, card=None):
         if card is None:
             card = self.card
-        plays = self._eval(self._getXPlaysfromwild(wild), card, iswild=True)
+        playslist = self._getXmovesfromXplays(self._getXPlaysfromwild(wild))
+        plays = self._eval(playslist, card, iswild=True)
         #print("plays: ", plays)
         if plays == []:
             took = Took({"didtake": False, "tookwhat": []})
@@ -170,7 +171,7 @@ class AI(Player):
         Only returns possible XMoves in plays PlaysList). 
         '''
         plays = [move for move in plays if move.isPossible(card)]
-        plays = [move for move in plays if len(move) == 1 or (move[0].isWild == True and move[1].isWild == False)]
+        plays = [move for move in plays if len(move.xplays) == 1 or (move.xplays[0].isWild == True and move.xplays[1].isWild == False)]
         return PlaysList(plays)
 
     @classmethod
