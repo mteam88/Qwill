@@ -22,6 +22,10 @@ class Evaluater: #Super Class
         '''
         raise NotImplementedError
 
+    @staticmethod
+    def _len_xmove(xmove):
+        return -len(xmove.xplays)
+
 class LeastSkipped(Evaluater):
     def __init__(self, *args, threshold=THRESHOLD, **kwargs):
         self.threshold = threshold
@@ -35,32 +39,27 @@ class LeastSkipped(Evaluater):
 
         scoringlist = ScoringList(card, self.xPlays)
 
-        scoringlist.score()
+        scoringlist.multi_sort_by([self._sort_added_skipped_key, self._len_xmove]) # Sort by total number of spaces skipped.
 
         print(f"scoringlist: {scoringlist}")
-        
-        scoringlist.sort_by(self._sort_added_skipped) # Sort by total number of spaces skipped.
 
         if scoringlist: 
-            bestXPlayinfo = scoringlist[0] # Set bestxplayinfo
+            bestXMove = scoringlist[0] # Set bestxplayinfo
 
         elif self.iswild == False:
             raise Penalty
         else:
             return []
 
-        if bestXPlayinfo.plyrWild == True: #This means that we might not have to take the XPlay
-            result = bestXPlayinfo.xplays if bestXPlayinfo[1][0][1] <= self.threshold else [] # Not sure about this
-            print(f"result: {result}")
-            return result
-        return bestXPlayinfo.xplays # TODO extend so takes wild then color play on turn if possible
+        if bestXMove.plyrWild == True: #This means that we might not have to take the XPlay
+            return bestXMove.xplays if bestXMove.scoring[0][1] <= self.threshold else []
+        return bestXMove.xplays # TODO extend so takes wild then color play on turn if possible
 
 
     # Internal Helper Methods
 
-    def _sort_added_skipped(self, xmove):
-        result = sum(xmove.scoring[i][0] for i in range(len(xmove.xplays)))
-        return (result, len(xmove.xplays))
+    def _sort_added_skipped_key(self, xmove):
+        return sum(xmove.scoring[i][0] for i in range(len(xmove.xplays)))
 
     @staticmethod
     def _checklocking(move) -> bool:
@@ -75,17 +74,22 @@ class LeastSkipped(Evaluater):
                 return move
 
 class ScoringList(list):
-    def __init__(self, card, xplays):
-        super().__init__(xplays)
+    def __init__(self, card, xmoves):
+        super().__init__([ScoredXMove(xmove, card) for xmove in xmoves])
         self.card = card
-    
-    def score(self):
-        self = [ScoredXMove(xmove, self.card) for xmove in self]
 
-    def sort_by(self, sortkey):
-        self.sort(key=sortkey)
+    def multi_sort_by(self, sortkeys):
+        "Sorts by list of keys, sortkeys should have tiebreaker last."
+        for sortkey in sortkeys[::-1]:
+            self.sort(key=sortkey)
 
 class ScoredXMove():
     def __init__(self, xmove, card):
-        self = xmove
+        self.xmove = xmove
         self.scoring = xmove.getScoring(card)
+
+    def __getattr__(self, name):
+        return getattr(self.xmove, name)
+    
+    def __repr__(self):
+        return (f"{self.__class__.__name__}: {self.__dict__}\n")

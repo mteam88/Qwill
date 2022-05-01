@@ -88,6 +88,7 @@ class AI(Player):
         if card is None: # Essentially an optional parameter
             card = self.card
         playslist, rolls = self._getXPlays(card.true_Dice)
+        print(f"rolls: {rolls}")
         playslist = self._getXmovesfromXplays(playslist)
         try:
             plays = self._eval(playslist, card, iswild=False)

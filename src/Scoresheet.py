@@ -97,7 +97,7 @@ class XPlay:
         #skipped section
         #print("lastx of row: ", self.findlastXs(card)[self.position[0]])
         #print("position in question: ", self.position[1])
-        skipped = self.position[1]- self.findlastXs(card)[self.position[0]] - 1
+        skipped = self.position[1]- self.findlastXs(card)[self.position[0]] - 2
         #print("skipped: ", skipped)
         #scoreincr section
         scoreincr = Card(initlist=deepcopy(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(self).scoreCard()-card.scoreCard()
@@ -139,9 +139,7 @@ class XMove():
         return True
 
     def _getscoringforxplay(self, play, card):
-        skipped = play.position[1]- play.findlastXs(card)[play.position[0]] - 1
-        scoreincr = Card(initlist=deepcopy(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(play).scoreCard()-card.scoreCard()
-        return (skipped, scoreincr)
+        return play.getScoring(card)
 
     def getScoring(self, card: Card):
         return [self._getscoringforxplay(play, card) for play in self.xplays]
