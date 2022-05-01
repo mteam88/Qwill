@@ -97,7 +97,7 @@ class XPlay:
         #skipped section
         #print("lastx of row: ", self.findlastXs(card)[self.position[0]])
         #print("position in question: ", self.position[1])
-        skipped = self.position[1]- self.findlastXs(card)[self.position[0]] - 1
+        skipped = self.position[1]- self.findlastXs(card)[self.position[0]] - 2
         #print("skipped: ", skipped)
         #scoreincr section
         scoreincr = Card(initlist=deepcopy(card), true_Dice=card.true_Dice, penalty=card.penalty).addX(self).scoreCard()-card.scoreCard()
@@ -122,3 +122,27 @@ class PlaysList(list):
     def __init__(self, plist, iswild=False):
         self.iswild = iswild
         super().__init__(plist)
+
+class XMove():
+    def __init__(self, xplays):
+        self.xplays = xplays
+        self.isWild = True in [xplay.isWild for xplay in xplays]
+        self.plyrWild = True in [xplay.plyrWild for xplay in xplays]
+
+    def isPossible(self, card: Card) -> bool:
+        newcard = deepcopy(card)
+        for xplay in self.xplays:
+            if xplay.isPossible(newcard): 
+                newcard.addX(xplay) 
+            else: 
+                return False
+        return True
+
+    def _getscoringforxplay(self, play, card):
+        return play.getScoring(card)
+
+    def getScoring(self, card: Card):
+        return [self._getscoringforxplay(play, card) for play in self.xplays]
+
+    def __repr__(self):
+        return (f"XMove: ({[ele.__repr__() for ele in self.xplays]})\n")

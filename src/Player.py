@@ -1,7 +1,7 @@
 import itertools
 from Evaluaters import *
 from random import randint
-from Scoresheet import XPlay, Card, PlaysList
+from Scoresheet import XPlay, Card, PlaysList, XMove
 from warnings import warn
 from loggingdecorator import logiof
 import logging
@@ -88,6 +88,8 @@ class AI(Player):
         if card is None: # Essentially an optional parameter
             card = self.card
         playslist, rolls = self._getXPlays(card.true_Dice)
+        print(f"rolls: {rolls}")
+        playslist = self._getXmovesfromXplays(playslist)
         try:
             plays = self._eval(playslist, card, iswild=False)
             #logging.info(f"Took from XPlays input: {plays}")
@@ -103,7 +105,8 @@ class AI(Player):
     def wild(self, wild, card=None):
         if card is None:
             card = self.card
-        plays = self._eval(self._getXPlaysfromwild(wild), card, iswild=True)
+        playslist = self._getXmovesfromXplays(self._getXPlaysfromwild(wild))
+        plays = self._eval(playslist, card, iswild=True)
         #print("plays: ", plays)
         if plays == []:
             took = Took({"didtake": False, "tookwhat": []})
@@ -135,7 +138,7 @@ class AI(Player):
     def _getXPlays(self, true_Dice):
         '''
         returns list that contains XPlay objects for 'False' dice, but 'False' for 'True' dice also returns rolls
-        Rolls dice by self
+        Rolls dice internally
         '''
         rolls = [randint(1,6) for _ in range(2)]
         for i in true_Dice:
@@ -154,13 +157,23 @@ class AI(Player):
         plays += AI._getXPlaysfromwild(sum(rolls[:2]))
         return plays, rolls #return data
 
+    @staticmethod
+    def _getXmovesfromXplays(xplays):
+        moves = list(itertools.permutations(xplays,2))
+        moves.extend([[ele] for ele in xplays])
+        # convert list of tuples to list of XMoves
+        moves = [XMove(list(ele)) for ele in moves]
+        return moves
+
+
     @classmethod
     def _getpossiblefromplays(cls, plays, card):
         '''
-        Only returns possible XPlays in plays PlaysList). 
-        Oh, and it's a one-liner because I'm awesome. So there.
+        Only returns possible XMoves in plays PlaysList). 
         '''
-        return PlaysList([play for play in plays if play.isPossible(card)])
+        plays = [move for move in plays if move.isPossible(card)]
+        plays = [move for move in plays if len(move.xplays) == 1 or (move.xplays[0].isWild == True and move.xplays[1].isWild == False)]
+        return PlaysList(plays)
 
     @classmethod
     def _getXPlaysfromwild(cls, wildint, plyrWild=False):
