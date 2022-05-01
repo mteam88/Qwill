@@ -87,7 +87,7 @@ class AI(Player):
         '''
         if card is None: # Essentially an optional parameter
             card = self.card
-        playslist, rolls = self._getXPlays(card.true_Dice)
+        playslist, rolls = self._rolldiceandgetXPlays(card.true_Dice)
         print(f"rolls: {rolls}")
         playslist = self._getXmovesfromXplays(playslist)
         try:
@@ -135,7 +135,7 @@ class AI(Player):
     def _getindexfromroll(self, color: int, rollnum: int):
         return 12 - rollnum if color >= 2 else rollnum - 2
 
-    def _getXPlays(self, true_Dice):
+    def _rolldiceandgetXPlays(self, true_Dice):
         '''
         returns list that contains XPlay objects for 'False' dice, but 'False' for 'True' dice also returns rolls
         Rolls dice internally
