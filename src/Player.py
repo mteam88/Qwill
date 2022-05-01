@@ -125,7 +125,7 @@ class AI(Player):
         #logging.info(f"Old Playslist: {playslist}")
         playslist = self._getpossiblefromplays(playslist, card)
         #logging.info(f"New Playlist: {playslist}")
-        lse = LeastSkipped(playslist, iswild=iswild)
+        lse = ScoreIncr(playslist, iswild=iswild)
         #logging.info(f"_evalall out: {lse.evalAll(card)}")
         return lse.evalAll(card)
 

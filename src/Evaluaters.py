@@ -22,44 +22,9 @@ class Evaluater: #Super Class
         '''
         raise NotImplementedError
 
-    @staticmethod
-    def _len_xmove(xmove):
-        return -len(xmove.xplays)
-
-class LeastSkipped(Evaluater):
-    def __init__(self, *args, threshold=THRESHOLD, **kwargs):
-        self.threshold = threshold
-        super().__init__(*args, **kwargs)
-
-    def evalAll(self, card) -> List[XMove]:
-        self.card = card
-        # Check if any are blocking plays and always take one if there is.
+    def _locking_xmove_exists(self):
         if (lockingmove := self._checkalllocking(self.xPlays)): # Hooray walrus operator!
             return lockingmove.xplays
-
-        scoringlist = ScoringList(card, self.xPlays)
-
-        scoringlist.multi_sort_by([self._sort_added_skipped_key, self._len_xmove]) # Sort by total number of spaces skipped.
-
-        print(f"scoringlist: {scoringlist}")
-
-        if scoringlist: 
-            bestXMove = scoringlist[0] # Set bestxplayinfo
-
-        elif self.iswild == False:
-            raise Penalty
-        else:
-            return []
-
-        if bestXMove.plyrWild == True: #This means that we might not have to take the XPlay
-            return bestXMove.xplays if bestXMove.scoring[0][1] <= self.threshold else []
-        return bestXMove.xplays # TODO extend so takes wild then color play on turn if possible
-
-
-    # Internal Helper Methods
-
-    def _sort_added_skipped_key(self, xmove):
-        return sum(xmove.scoring[i][0] for i in range(len(xmove.xplays)))
 
     @staticmethod
     def _checklocking(move) -> bool:
@@ -72,6 +37,76 @@ class LeastSkipped(Evaluater):
         for move in playslist:
             if cls._checklocking(move):
                 return move
+
+    @staticmethod
+    def _len_xmove(xmove):
+        return -len(xmove.xplays)
+
+class LeastSkipped(Evaluater):
+    def __init__(self, *args, threshold=THRESHOLD, **kwargs):
+        self.threshold = threshold
+        super().__init__(*args, **kwargs)
+
+    def evalAll(self, card) -> List[XMove]:
+        self.card = card
+
+        # Check if any are locking plays and always take one if there is.
+        if lockingplay := self._locking_xmove_exists():
+            return lockingplay
+
+        scoringlist = ScoringList(card, self.xPlays)
+
+        scoringlist.multi_sort_by([self._sort_added_skipped_key, self._len_xmove]) # Sort by total number of spaces skipped.
+
+        #print(f"scoringlist: {scoringlist}")
+
+        if scoringlist: 
+            bestXMove = scoringlist[0] # Set bestxplayinfo
+
+        elif self.iswild == False:
+            raise Penalty
+        else:
+            return []
+
+        if bestXMove.plyrWild == True: #This means that we might not have to take the XMove
+            return bestXMove.xplays if bestXMove.scoring[0][1] <= self.threshold else []
+        return bestXMove.xplays 
+
+
+    # Internal Helper Methods
+
+    def _sort_added_skipped_key(self, xmove):
+        return sum(xmove.scoring[i][0] for i in range(len(xmove.xplays)))
+
+class ScoreIncr(Evaluater):
+    def evalAll(self, card):
+        self.card = card
+
+        # Check if any are locking plays and always take one if there is.
+        if lockingplay := self._locking_xmove_exists():
+            return lockingplay
+
+        scoringlist = ScoringList(card, self.xPlays)
+
+        scoringlist.multi_sort_by([self._sort_added_scoreincr_reversed_key, self._len_xmove]) # Sort by total number of spaces skipped.
+
+        #print(f"scoringlist: {scoringlist}")
+
+        if scoringlist: 
+            bestXMove = scoringlist[0] # Set bestxplayinfo
+
+        elif self.iswild == False:
+            raise Penalty
+        else:
+            return []
+
+        if bestXMove.plyrWild == True: #This means that we might not have to take the XMove
+            return bestXMove.xplays if bestXMove.scoring[0][1] <= self.threshold else []
+        return bestXMove.xplays
+    
+    def _sort_added_scoreincr_reversed_key(self, xmove):
+        return -sum(xmove.scoring[i][1] for i in range(len(xmove.xplays)))
+
 
 class ScoringList(list):
     def __init__(self, card, xmoves):
